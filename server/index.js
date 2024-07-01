@@ -12,11 +12,11 @@ require('dotenv').config();
 const PORT = process.env.PORT || 3000;
 
 
-const serviceAccount = require(process.env.FIREBASE_PATH); // Replace with your Firebase service account key
+const serviceAccount = process.env.FIREBASE_PATH; // Replace with your Firebase service account key
 
 
 admin.initializeApp({
- credential: admin.credential.cert(serviceAccount),
+ credential: admin.credential.cert(JSON.parse(serviceAccount)),
  storageBucket: 'data-tool-6c41e.appspot.com' // Replace with your Firebase project ID
 });
 
