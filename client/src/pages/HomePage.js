@@ -108,7 +108,7 @@ const HomePage = () => {
                 <div class="flex items-center justify-center mb-4">
                     <div class="bg-white text-black rounded-full h-12 w-12 flex items-center justify-center text-2xl font-bold">3</div>
                 </div>
-                <h2 class="text-xl font-semibold">Insightful</h2>
+                <h2 class="text-xl font-semibold">INsightful</h2>
                 <p>Access powerful analytics and visualizations that drive smarter decision-making.</p>
             </div>
             <div>
