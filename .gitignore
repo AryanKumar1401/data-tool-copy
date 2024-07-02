@@ -1,3 +1,4 @@
 
 *.csv
 /server/public/visualizations
+/node_modules

@@ -14,6 +14,10 @@
     "sharp": "^0.33.4"
   },
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "node index.js",
+    "server": "nodemon index.js"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
   }
 }
