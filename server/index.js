@@ -299,7 +299,7 @@ async function createThread(fileId) {
      messages: [
        {
          role: "user",
-         content: "create a graph for this file. Use your best intuition for what the columns and the corresponding data should be as well as what type of graph it should be.",
+         content: "create a graph for this file. Use the following criteria to determine what kind of graph to create: A bar graph should be created if the category names are discrete and not numerical, a line graph should be created if labels are numerical and the dataset allows you to show trends and progress continually.",
          attachments: [{ file_id: fileId, tools: [{ type: "code_interpreter" }] }],
        },
      ],
