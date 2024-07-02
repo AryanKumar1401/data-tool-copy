@@ -72,7 +72,7 @@ const HomePage = () => {
     <div class="flex justify-around space-x-8">
       <div class="flex flex-col items-center">
         <h2 class="text-2xl font-semibold mb-4">Simplify Data</h2>
-        <p class="max-w-xs">Our tools take the complexity out of data processing, so you can focus on what matters most.</p>
+        <p class="max-w-xs">Our tools take the complexity out of data processing, so you can focus on what matters the most.</p>
       </div>
       <div class="flex flex-col items-center">
         <h2 class="text-2xl font-semibold mb-4">Unlock Insights</h2>
