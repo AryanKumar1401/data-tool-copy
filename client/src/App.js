@@ -33,13 +33,14 @@ function App() {
   };
 
   return (
-    <Router>
-      <Helmet>
-        <title>Data Tool</title>
-      </Helmet>
-      <GlobalStyles />
-      <div className="flex flex-col min-h-screen">
-        <header className="bg-black fixed top-0 left-0 w-full p-4 rounded-lg shadow-lg flex justify-between items-center z-50">
+    <div className='flex flex-col h-screen'>
+      <Router>
+        <Helmet>
+          <title>Data Tool</title>
+        </Helmet>
+        <GlobalStyles />
+       
+        <header className="bg-black fixed top-0 left-0 w-full p-3 flex justify-between items-center z-50">
           <div className="flex items-center">
             <div
               className="w-10 h-10 bg-center bg-no-repeat bg-contain mr-3"
@@ -51,7 +52,6 @@ function App() {
           </div>
           <nav className="flex space-x-4">
             <Link to="/" className="nav-link text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Main</Link>
-            <Link to="/about" className="nav-link text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">About</Link>
             <Link to="/viz" className="nav-link text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Explore</Link>
             <Link to="/pricing" className="nav-link text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Pricing</Link>
             <Link to="/contact" className="nav-link text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Contact</Link>
@@ -74,7 +74,8 @@ function App() {
             </button>
           )}
         </header>
-        <main className="flex-1 mt-20 p-4">
+
+        <div className="flex-1 mt-20">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
@@ -92,9 +93,14 @@ function App() {
               </div>
             </div>
           )}
-        </main>
-      </div>
-    </Router>
+        </div>
+
+        <footer className="bg-black text-white text-center py-4 mt-auto">
+          <p>&copy; {new Date().getFullYear()} DataTool. All rights reserved.</p>
+        </footer>
+        
+      </Router>
+    </div>
   );
 }
 
