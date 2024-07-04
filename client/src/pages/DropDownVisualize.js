@@ -1,10 +1,16 @@
 import React, { useContext, useState } from 'react';
 import { DropdownVizContext } from '../components/DropdownVizContext';
+import axios from 'axios';
+
+let imageSrcExport = '';
 
 function DropDownVisualize() { 
     const [selectedValueQ1, setSelectedValueQ1] = useState("Bar");
     const [selectedValueQ2, setSelectedValueQ2] = useState("Exploratory");
     const [Info, setInfo] = useState("");
+    const [imageSrc, setImageSrc] = useState(null); // State for storing imageSrc
+  const [cleanFileUrl, setCleanFileUrl] = useState(null); // State for storing clean CSV file URL
+  const [threadFinishNotifier, setThreadFinishNotifier] = useState(false);
 
   const handleChangeQ1 = (event) => {
     setSelectedValueQ1(event.target.value);
@@ -17,6 +23,37 @@ function DropDownVisualize() {
   const handleInfoChange = (event) => {
     setInfo(event.target.value);
   };
+
+
+ 
+const fileID = axios.get('/api/file_storer');
+
+
+const handleThreadRun = async () => {
+
+   const assistant = await axios.post('/api/create-assistant', { fileID });
+
+
+  console.log('Assistant created with ID:', assistant.data.id);
+
+  const thread = await axios.post('/api/create-thread', { fileID, assistantId: assistant.data.id, selectedValueQ1, selectedValueQ2, Info});
+  console.log('Thread created with ID:', thread.data.id);
+  
+
+  const responseFromThread = await axios.post('/api/run-thread');
+  const { imageUrl, messages, fileContent } = responseFromThread.data;
+  console.log('Image ID:', imageUrl);
+  console.log('Messages:', messages);
+  console.log('file content: ', fileContent);
+  setImageSrc(imageUrl); // Update state with the image src
+  imageSrcExport = imageUrl;
+  setThreadFinishNotifier(true); 
+  
+
+
+}
+
+  
 
   return (
     <div>
@@ -46,7 +83,7 @@ function DropDownVisualize() {
         />
       </div>
 
-      <button>Submit</button>
+      <button onClick={handleThreadRun}>Submit</button>
     </div>
   );
 }

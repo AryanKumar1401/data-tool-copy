@@ -5,6 +5,7 @@ const OpenAI = require('openai');
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const admin = require('firebase-admin');
+const { useAsyncValue } = require('react-router-dom');
 const app = express();
 require('dotenv').config();
 
@@ -124,7 +125,7 @@ function displayThreadMessages(messages) {
 
 
 app.post('/api/create-assistant', async (req, res) => {
- const { fileId } = req.body;
+ const { fileId } = axios.get('/api/file_storer');
  try {
    const assistant = await openai.beta.assistants.create({
      name: "Data Visualizer",
@@ -293,13 +294,13 @@ app.post('/api/run-threadClean', async (req, res) => {
 
 
 
-async function createThread(fileId) {
+async function createThread(fileId, S1, S2, Info) {
  try {
    const thread = await openai.beta.threads.create({
      messages: [
        {
          role: "user",
-         content: "create a graph for this file. Use the following criteria to determine what kind of graph to create: A bar graph should be created if the category names are discrete and not numerical, a line graph should be created if labels are numerical and the dataset allows you to show trends and progress continually.",
+         content: "create a graph for this file. You should create a " + S1 + " graph. The purpose of the data visualization should be " +  S2 + ". These are the specific trends you should focus on exploring " + Info + ".",
          attachments: [{ file_id: fileId, tools: [{ type: "code_interpreter" }] }],
        },
      ],
@@ -337,10 +338,17 @@ async function createRun() {
 }
 
 
+//NEW FUNCTION CREATED
+app.post('/api/file_storer', async (req, res) => {
+  const {fileId} = req.body;
+  return fileId;
+})
+
+
 app.post('/api/create-thread', async (req, res) => {
- const { fileId } = req.body;
+ const { fileId, S1, S2, Info } = req.body;
  try {
-   const threadId = await createThread(fileId);
+   const threadId = await createThread(fileId, S1, S2, Info);
    res.json({ id: threadId });
  } catch (error) {
    console.error('Error:', error);

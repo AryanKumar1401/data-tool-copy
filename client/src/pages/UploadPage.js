@@ -4,6 +4,7 @@ import ChatBox from '../components/ChatBox';
 import axios from 'axios';
 import UploadPageAfterUploading from './UploadPageAfterUploading';
 import styled from 'styled-components';
+import DropDownVisualize from './DropDownVisualize';
 
 const PageContainer = styled.div`
   display: flex;
@@ -66,21 +67,16 @@ const UploadPage = () => {
 
       
 
-      const assistant = await axios.post('/api/create-assistant', { fileId });
-      console.log('Assistant created with ID:', assistant.data.id);
-
-      const thread = await axios.post('/api/create-thread', { fileId, assistantId: assistant.data.id });
-      console.log('Thread created with ID:', thread.data.id);
       
 
-      const responseFromThread = await axios.post('/api/run-thread');
-      const { imageUrl, messages, fileContent } = responseFromThread.data;
-      console.log('Image ID:', imageUrl);
-      console.log('Messages:', messages);
-      console.log('file content: ', fileContent);
-      setImageSrc(imageUrl); // Update state with the image src
-      imageSrcExport = imageUrl;
-      setThreadFinishNotifier(true);     
+      //NEW FUNCTION
+
+      const fileExporter = await axios.post('/api/file_storer', {fileId});
+
+      //NEW FUNCTION SECTION END
+
+
+          
     } catch (error) {
       console.error('Error uploading file:', error);
       setFileUploadSuccess(false);
@@ -183,8 +179,8 @@ const UploadPage = () => {
 
   //LOAD VIZUALIZATION SECTION END
   const renderContentUpload = () => {
-    if (fileUploadSuccess && !threadFinishNotifier) {
-      return <UploadPageAfterUploading />;
+    if (fileUploadSuccess) {
+      return <DropDownVisualize />;
     } else if (fileUploadSuccess && threadFinishNotifier) {
       return (<PageContainer>
         <div className="flex flex-col items-center w-1/3 ml-5 bg-white p-5 border border-gray-300 h-4/5 overflow-y-auto">
@@ -224,5 +220,7 @@ const UploadPage = () => {
   );
   
 };
+
+
 
 export default UploadPage;
