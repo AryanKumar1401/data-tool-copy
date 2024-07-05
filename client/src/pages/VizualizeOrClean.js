@@ -4,27 +4,11 @@ import styled from 'styled-components';
 import Button from 'react-bootstrap/Button';
 import { ButtonToolbar } from 'react-bootstrap';
 
-const PageContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f0f0f0;
-`;
-
-const divHoldingWhat = styled.div `
-
-  float: top;
-`
-
-const StyledButton = styled(Button)`
-  margin: 0 20px; /* Adjust the margin value as needed */
-`;
 
 const VizualizeOrClean = () => {
   const navigate = useNavigate();
 
-  const gotToNewPage = () => {
+  const goToNewPage = () => {
     navigate("/upload");
   };
 
@@ -35,25 +19,28 @@ const VizualizeOrClean = () => {
   return (
 
    
-    <PageContainer>
-
-     
-     
+    <div class="relative bg-gray-100 flex items-center justify-center min-h-screen font-mono">
       
-      <div>
-      <h1>What would you like to do today?</h1>
-      
-     
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"></link>
+    <div class="relative max-w-md w-full bg-white shadow-md rounded-lg p-6">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-4">What would you like to do today?</h1>
+        <p class="text-center text-gray-600 mb-6">
+            You can either clean your dataset to prepare it for analysis or directly visualize your data to gain insights.
+        </p>
+        <div class="flex flex-col space-y-4">
+            <button onClick={goToNewPage2} class="flex items-center justify-center w-full py-3 px-4 bg-black text-white font-semibold rounded-lg shadow hover:bg-blue-600 transition duration-200">
+                <i class="fas fa-broom mr-2"></i>
+                Clean Dataset
+            </button>
+            <button onClick={goToNewPage} class="flex items-center justify-center w-full py-3 px-4 bg-black text-white font-semibold rounded-lg shadow hover:bg-orange-600 transition duration-200">
+                <i class="fas fa-chart-line mr-2"></i>
+                Visualize Dataset
+            </button>
+        </div>
+    </div>
+</div>
 
 
-     
-      
-        <ButtonToolbar size='lg' className='mb-2'>
-          <StyledButton variant='dark' size='lg' onClick={goToNewPage2}>Clean your dataset</StyledButton>
-          <StyledButton variant='dark' size='lg' onClick={gotToNewPage}>Visualize your dataset</StyledButton>
-        </ButtonToolbar>
-      </div>
-    </PageContainer>
   );
 };
 

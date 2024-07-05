@@ -6,6 +6,7 @@ module.exports = {
       animation: {
         "spin-around": "spin-around calc(var(--speed) * 2) infinite linear",
         slide: "slide var(--speed) ease-in-out infinite alternate",
+        ripple: "ripple 3400ms ease infinite",
       },
       keyframes: {
         "spin-around": {
@@ -25,6 +26,14 @@ module.exports = {
         slide: {
           to: {
             transform: "translate(calc(100cqw - 100%), 0)",
+          },
+        },
+        ripple: {
+          "0%, 100%": {
+            transform: "translate(-50%, -50%) scale(1)",
+          },
+          "50%": {
+            transform: "translate(-50%, -50%) scale(0.9)",
           },
         },
       },

@@ -6,7 +6,6 @@ import UploadPageAfterLoadingVisualization from './UploadPageAfterLoadingVisuali
 import styled from 'styled-components';
 
 const PageContainer = styled.div`
-  display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
@@ -16,6 +15,7 @@ const PageContainer = styled.div`
 const UploadPageCleanse = () => {
   const [file, setFile] = useState(null);
   const [fileContent, setFileContent] = useState('');
+  const [fileSelected, setFileSelected] = useState(false); // State to track if file is selected
   const [progress, setProgress] = useState({ started: false, percentageCompleted: 0 });
   const [uploadFlag, setUploadFlag] = useState(false);
   const [fileUploadSuccess, setFileUploadSuccess] = useState(false);
@@ -30,6 +30,8 @@ const UploadPageCleanse = () => {
     const reader = new FileReader();
     reader.onload = (e) => {
       setFileContent(e.target.result);
+      setFileSelected(true);
+
     };
     reader.readAsText(selectedFile);
   };
@@ -97,6 +99,7 @@ const UploadPageCleanse = () => {
             handleFileChange={handleFileChange}
             handleUpload={handleUpload}
             progress={progress}
+            fileSelected={fileSelected}
           />
         </PageContainer>
       );

@@ -7,7 +7,6 @@ import styled from 'styled-components';
 import DropDownVisualize from './DropDownVisualize';
 
 const PageContainer = styled.div`
-  display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
@@ -19,6 +18,7 @@ export let cleanFileUrlExport = '';
 const UploadPage = () => {
   const [file, setFile] = useState(null);
   const [fileContent, setFileContent] = useState('');
+  const [fileSelected, setFileSelected] = useState(false); // State to track if file is selected
   const [progress, setProgress] = useState({ started: false, percentageCompleted: 0 });
   const [imageSrc, setImageSrc] = useState(null); // State for storing imageSrc
   const [cleanFileUrl, setCleanFileUrl] = useState(null); // State for storing clean CSV file URL
@@ -33,7 +33,7 @@ const UploadPage = () => {
     reader.onload = (e) => {
       setFileContent(e.target.result);
       fileContentExporter = fileContent;
-      
+      setFileSelected(true);
     };
     reader.readAsText(selectedFile);
   };
@@ -204,6 +204,7 @@ const UploadPage = () => {
             handleUpload={handleUpload}
             progress={progress}
             msg={msgStatus}
+            fileSelected={fileSelected}
           />
         </PageContainer>
       );
