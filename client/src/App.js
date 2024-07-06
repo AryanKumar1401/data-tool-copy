@@ -82,7 +82,7 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/pricing" element={<PricingPage />} />
-            <Route path="/viz" element={<Maintenance />} />
+            <Route path="/viz" element={<VizualizeOrClean />} />
             <Route path="/cleanse" element={<UploadPageCleanse />} />
             <Route path="/chat" element={<UploadPageAfterLoadingVisualization />} />
             <Route path="/dropdownviz" element={<DropDownVisualize />} />

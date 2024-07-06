@@ -4,6 +4,7 @@ import ChatBox from '../components/ChatBox';
 import axios from 'axios';
 import AssistantAPIKeyFunctions from '../components/AssistantAPIKeyFunctions';
 import { fileContentExporter, imageSrcExport } from './UploadPage';
+import { imageSrcExportDDV } from './DropDownVisualize';
 
 const PageContainer = styled.div`
   display: flex;
@@ -87,7 +88,7 @@ const UploadPageAfterLoadingVisualization = ({ fileUrl }) => {
   return (
     <PageContainer>
       <div className="flex flex-col items-center w-1/3 ml-5 bg-white p-5 border border-gray-300 h-4/5 overflow-y-auto">
-      {imageSrcExport && <img src={imageSrcExport} alt="Uploaded Visualization" />}
+      {imageSrcExportDDV && <img src={imageSrcExportDDV} alt="Uploaded Visualization" />}
       {fileUrl && (
         <a href={fileUrl} download className="mt-3 text-blue-500 hover:underline">
           Download File

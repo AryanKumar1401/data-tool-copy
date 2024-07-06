@@ -1,11 +1,38 @@
 import React, { useContext, useState } from 'react';
 import { DropdownVizContext } from '../components/DropdownVizContext';
 import axios from 'axios';
+import UploadPageAfterUploading from './UploadPageAfterUploading';
+import UploadPageAfterLoadingVisualization from './UploadPageAfterLoadingVisualization';
+import styled from 'styled-components';
+import Select from "react-select";
 
-let imageSrcExport = '';
+export let imageSrcExportDDV = '';
 let file_Id_DropDown = '';
 
+const PageContainer = styled.div`
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+`;
+
+
+
+
+
+
+
 function DropDownVisualize() { 
+
+  const [isClearable, setIsClearable] = useState(true);
+  const [isSearchable, setIsSearchable] = useState(true);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRtl, setIsRtl] = useState(false);
+
+  const [threadSuccessCreate, setthreadSuccessCreate] = useState(false);
+
+const [threadFinishNotiferDDV, setthreadFinishNotifierDDV] = useState(false);
     const [selectedValueQ1, setSelectedValueQ1] = useState("Bar");
     const [selectedValueQ2, setSelectedValueQ2] = useState("Exploratory");
     const [Info, setInfo] = useState("");
@@ -49,6 +76,8 @@ const handleThreadRun = async () => {
 
   const thread = await axios.post('/api/create-thread', { file_Id_DropDown, assistantId: assistant.data.id, selectedValueQ1, selectedValueQ2, Info});
   console.log('Thread created with ID:', thread.data.id);
+
+  setthreadSuccessCreate(true);
   
 
   const responseFromThread = await axios.post('/api/run-thread');
@@ -57,18 +86,37 @@ const handleThreadRun = async () => {
   console.log('Messages:', messages);
   console.log('file content: ', fileContent);
   setImageSrc(imageUrl); // Update state with the image src
-  imageSrcExport = imageUrl;
-  setThreadFinishNotifier(true); 
+  imageSrcExportDDV = imageUrl;
+  setthreadFinishNotifierDDV(true);
   
 
 
 }
 
+  const contentDisplay = () => {
+    if(threadSuccessCreate && !threadFinishNotiferDDV) {
+      return <UploadPageAfterUploading />
+    }
+    else if(threadSuccessCreate && threadFinishNotiferDDV) {
+      return <UploadPageAfterLoadingVisualization />
+    }
+    else {
+      return (
+        <PageContainer>
+
+
+<div class="relative bg-gray-100 flex items-center justify-center min-h-screen font-mono">
+      
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"></link>
+    <div class="relative max-w-md w-full bg-white shadow-md rounded-lg p-6">
+
   
 
-  return (
-    <div>
-      <h1>What sort of graph are you looking to create?</h1>
+      <h2>What sort of graph are you looking to create?</h2>
+
+    
+
+     
       <select value={selectedValueQ1} onChange={handleChangeQ1}>
         <option value="Bar">Bar</option>
         <option value="Line">Line</option>
@@ -78,7 +126,7 @@ const handleThreadRun = async () => {
         <option value="Pairplots">Pairplot</option>
       </select>
 
-      <h1>What is the main purpose of your dataset?</h1>
+      <h2>What is the main purpose of your dataset?</h2>
       <select value={selectedValueQ2} onChange={handleChangeQ2}>
         <option value="Exploratory">Exploratory data analysis</option>
         <option value="Present">Presentation</option>
@@ -86,7 +134,7 @@ const handleThreadRun = async () => {
       </select>
 
       <div className="form-group">
-        <label>Are there any specific trends you are interested in exploring?</label>
+        <h2>Are there any specific trends you are interested in exploring?</h2>
         <input
           type="text"
           value={Info}
@@ -95,6 +143,19 @@ const handleThreadRun = async () => {
       </div>
 
       <button onClick={handleThreadRun}>Submit</button>
+
+      </div>
+
+      </div>
+
+    </PageContainer>
+      )
+    }
+  }
+
+  return (
+    <div>
+    {contentDisplay()}
     </div>
   );
 }

@@ -32,7 +32,7 @@ const HomePage = () => {
 
   // Function to handle button click and navigate to another route
   const navigateToExplore = () => {
-    navigate('/upload');
+    navigate('/viz');
   };
 
   return (
