@@ -14,6 +14,7 @@ import VizualizeOrClean from './pages/VizualizeOrClean';
 import UploadPageCleanse from './pages/UploadPageCleanse';
 import UploadPageAfterLoadingVisualization from './pages/UploadPageAfterLoadingVisualization';
 import DropDownVisualize from './pages/DropDownVisualize';
+import Maintenance from './pages/MaintenancePage';
 import { DropdownVizProvider } from './components/DropdownVizContext'; // Ensure correct import
 
 function App() {
@@ -81,7 +82,7 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/pricing" element={<PricingPage />} />
-            <Route path="/viz" element={<VizualizeOrClean />} />
+            <Route path="/viz" element={<Maintenance />} />
             <Route path="/cleanse" element={<UploadPageCleanse />} />
             <Route path="/chat" element={<UploadPageAfterLoadingVisualization />} />
             <Route path="/dropdownviz" element={<DropDownVisualize />} />

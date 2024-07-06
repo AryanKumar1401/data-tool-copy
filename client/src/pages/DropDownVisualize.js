@@ -27,22 +27,22 @@ function DropDownVisualize() {
 
 
 
-  const getFileResponse = async () => {
-    const response = await axios.post('/api/file_storer');
-    file_Id_DropDown = response.data.file_Id;
+  // const getFileResponse = async () => {
+  //   const response = await axios.post('/api/file_storer');
+  //   file_Id_DropDown = response.data.file_Id;
 
-    console.log(file_Id_DropDown);
+  //   console.log(file_Id_DropDown);
 
-    return file_Id_DropDown;
-  }
+  //   return file_Id_DropDown;
+  // }
  
 
 
 const handleThreadRun = async () => {
 
-  file_Id_DropDown = await getFileResponse();
+  //file_Id_DropDown = await getFileResponse();
 
-  const assistant = await axios.post('/api/create-assistant', { file_Id_DropDown });
+  const assistant = await axios.post('/api/create-assistant');
 
 
   console.log('Assistant created with ID:', assistant.data.id);

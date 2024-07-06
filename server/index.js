@@ -126,7 +126,7 @@ function displayThreadMessages(messages) {
 
 app.post('/api/create-assistant', async (req, res) => {
 
-const {file_store_Id} = req.body;
+// const {file_store_Id} = req.body;
  
  try {
    const assistant = await openai.beta.assistants.create({
@@ -296,14 +296,14 @@ app.post('/api/run-threadClean', async (req, res) => {
 
 
 
-async function createThread(file_Id_DropDown, assistantId, selectedValueQ1, selectedValueQ2, Info) {
+async function createThread(assistantId, selectedValueQ1, selectedValueQ2, Info) {
  try {
    const thread = await openai.beta.threads.create({
      messages: [
        {
          role: "user",
-         content: "create a graph for this file. You should create a " + selectedValueQ1 + " graph. The purpose of the data visualization should be " +  sel + ". These are the specific trends you should focus on exploring " + Info + ".",
-         attachments: [{ file_id: file_Id_DropDown, tools: [{ type: "code_interpreter" }] }],
+         content: "create a graph for this file. You should create a " + selectedValueQ1 + " graph. The purpose of the data visualization should be " +  selectedValueQ2 + ". These are the specific trends you should focus on exploring " + Info + ".",
+         attachments: [{ file_id: file_store_Id, tools: [{ type: "code_interpreter" }] }],
        },
      ],
    });
@@ -350,10 +350,10 @@ app.post('/api/file_storer', async (req, res) => {
 
 app.post('/api/create-thread', async (req, res) => {
 
-  const {file_Id_DropDown, assistantId, selectedValueQ1, selectedValueQ2, Info} = req.body;
+  const {assistantId, selectedValueQ1, selectedValueQ2, Info} = req.body;
  
  try {
-   const threadId = await createThread(file_Id_DropDown, assistantId, selectedValueQ1, selectedValueQ2, Info);
+   const threadId = await createThread(assistantId, selectedValueQ1, selectedValueQ2, Info);
    res.json({ id: threadId });
  } catch (error) {
    console.error('Error:', error);
