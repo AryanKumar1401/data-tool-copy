@@ -106,47 +106,74 @@ const handleThreadRun = async () => {
 
 
 <div class="relative bg-gray-100 flex items-center justify-center min-h-screen font-mono">
-      
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"></link>
+
     <div class="relative max-w-md w-full bg-white shadow-md rounded-lg p-6">
+        <h2 class="text-xl font-bold mb-4 text-gray-700">What sort of graph are you looking to create?</h2>
+        <select value={selectedValueQ1} onChange={handleChangeQ1} class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="Bar">Bar</option>
+            <option value="Line">Line</option>
+            <option value="Pie">Pie</option>
+            <option value="Scatter">Scatterplot</option>
+            <option value="Geomap">Geomap</option>
+            <option value="Pairplots">Pairplot</option>
+        </select>
 
-  
+        <h2 class="text-xl font-bold mb-4 text-gray-700">What is the main purpose of your dataset?</h2>
+        <select value={selectedValueQ2} onChange={handleChangeQ2} class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="Exploratory">Exploratory data analysis</option>
+            <option value="Present">Presentation</option>
+            <option value="Trend">Trend Identification</option>
+        </select>
 
-      <h2>What sort of graph are you looking to create?</h2>
+        <div class="mb-6">
+            <h2 class="text-xl font-bold mb-2 text-gray-700">Are there any specific trends you are interested in exploring?</h2>
+            <input type="text" value={Info} onChange={handleInfoChange} class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter trends here" />
+        </div>
 
+        <button onClick={handleThreadRun} class="w-full bg-black text-white p-3 rounded-lg font-medium hover:bg-blue-600 transition duration-300">Submit</button>
+    </div>
+
+</div>
+
+
+{/* <div class="bg-gray-100 flex items-center justify-center h-screen font-mono">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"></link>
+
+<div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
     
+    <form class="space-y-6">
+        <div>
+            <label for="graph-type" class="block text-gray-600 font-medium mb-2">What sort of graph are you looking to create?</label>
+            <select id="graph-type" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" value={selectedValueQ1} onChange={handleChangeQ1}>
+    <option value="Bar">Bar</option>
+    <option value="Line">Line</option>
+    <option value="Pie">Pie</option>
+    <option value="Scatter">Scatterplot</option>
+    <option value="Geomap">Geomap</option>
+    <option value="Pairplots">Pairplot</option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="dataset-purpose" class="block text-gray-600 font-medium mb-2">What is the main purpose of your dataset?</label>
+            <select id="dataset-purpose" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" value={selectedValueQ2} onChange={handleChangeQ2}>
+               <option value="Exploratory">Exploratory data analysis</option>
+    <option value="Present">Presentation</option>
+    <option value="Trend">Trend Identification</option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="trends" class="block text-gray-600 font-medium mb-2">Are there any specific trends you are interested in exploring?</label>
+            <input type="text" id="trends" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter trends here" value={Info}
+      onChange={handleInfoChange} />
+        </div>
+        
+        <button onClick={handleThreadRun}>Submit</button>
+    </form>
+</div>
 
-     
-      <select value={selectedValueQ1} onChange={handleChangeQ1}>
-        <option value="Bar">Bar</option>
-        <option value="Line">Line</option>
-        <option value="Pie">Pie</option>
-        <option value="Scatter">Scatterplot</option>
-        <option value="Geomap">Geomap</option>
-        <option value="Pairplots">Pairplot</option>
-      </select>
-
-      <h2>What is the main purpose of your dataset?</h2>
-      <select value={selectedValueQ2} onChange={handleChangeQ2}>
-        <option value="Exploratory">Exploratory data analysis</option>
-        <option value="Present">Presentation</option>
-        <option value="Trend">Trend Identification</option>
-      </select>
-
-      <div className="form-group">
-        <h2>Are there any specific trends you are interested in exploring?</h2>
-        <input
-          type="text"
-          value={Info}
-          onChange={handleInfoChange}
-        />
-      </div>
-
-      <button onClick={handleThreadRun}>Submit</button>
-
-      </div>
-
-      </div>
+</div> */}
 
     </PageContainer>
       )

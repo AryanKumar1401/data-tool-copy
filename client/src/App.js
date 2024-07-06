@@ -86,6 +86,7 @@ function App() {
             <Route path="/cleanse" element={<UploadPageCleanse />} />
             <Route path="/chat" element={<UploadPageAfterLoadingVisualization />} />
             <Route path="/dropdownviz" element={<DropDownVisualize />} />
+            <Route path="/maintain" element={<Maintenance />} />
           </Routes>
           {showAuth && (
             <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
