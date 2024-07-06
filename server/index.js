@@ -125,7 +125,9 @@ function displayThreadMessages(messages) {
 
 
 app.post('/api/create-assistant', async (req, res) => {
- const { fileId } = axios.get('/api/file_storer');
+
+const {file_store_Id} = req.body;
+ 
  try {
    const assistant = await openai.beta.assistants.create({
      name: "Data Visualizer",
@@ -134,7 +136,7 @@ app.post('/api/create-assistant', async (req, res) => {
      tools: [{ type: "code_interpreter" }],
      tool_resources: {
        "code_interpreter": {
-         "file_ids": [fileId],
+         "file_ids": [file_store_Id],
        },
      },
    });
@@ -294,14 +296,14 @@ app.post('/api/run-threadClean', async (req, res) => {
 
 
 
-async function createThread(fileId, S1, S2, Info) {
+async function createThread(file_Id_DropDown, assistantId, selectedValueQ1, selectedValueQ2, Info) {
  try {
    const thread = await openai.beta.threads.create({
      messages: [
        {
          role: "user",
-         content: "create a graph for this file. You should create a " + S1 + " graph. The purpose of the data visualization should be " +  S2 + ". These are the specific trends you should focus on exploring " + Info + ".",
-         attachments: [{ file_id: fileId, tools: [{ type: "code_interpreter" }] }],
+         content: "create a graph for this file. You should create a " + selectedValueQ1 + " graph. The purpose of the data visualization should be " +  sel + ". These are the specific trends you should focus on exploring " + Info + ".",
+         attachments: [{ file_id: file_Id_DropDown, tools: [{ type: "code_interpreter" }] }],
        },
      ],
    });
@@ -336,19 +338,22 @@ async function createRun() {
    throw new Error('Failed to create run.');
  }
 }
-
+var file_store_Id;
 
 //NEW FUNCTION CREATED
 app.post('/api/file_storer', async (req, res) => {
   const {fileId} = req.body;
-  return fileId;
+  file_store_Id = fileId
+  res.json({file_Id: fileId});
 })
 
 
 app.post('/api/create-thread', async (req, res) => {
- const { fileId, S1, S2, Info } = req.body;
+
+  const {file_Id_DropDown, assistantId, selectedValueQ1, selectedValueQ2, Info} = req.body;
+ 
  try {
-   const threadId = await createThread(fileId, S1, S2, Info);
+   const threadId = await createThread(file_Id_DropDown, assistantId, selectedValueQ1, selectedValueQ2, Info);
    res.json({ id: threadId });
  } catch (error) {
    console.error('Error:', error);

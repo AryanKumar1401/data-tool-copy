@@ -69,11 +69,13 @@ const UploadPage = () => {
 
       
 
-      //NEW FUNCTION
+      // //NEW FUNCTION
 
-      const fileExporter = await axios.post('/api/file_storer', {fileId});
+      const response2 = await axios.post('/api/file_storer', {fileId});
+      console.log(response2.data)
+      
 
-      //NEW FUNCTION SECTION END
+      // //NEW FUNCTION SECTION END
 
 
           

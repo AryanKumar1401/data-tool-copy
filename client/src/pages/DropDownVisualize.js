@@ -3,6 +3,7 @@ import { DropdownVizContext } from '../components/DropdownVizContext';
 import axios from 'axios';
 
 let imageSrcExport = '';
+let file_Id_DropDown = '';
 
 function DropDownVisualize() { 
     const [selectedValueQ1, setSelectedValueQ1] = useState("Bar");
@@ -25,18 +26,28 @@ function DropDownVisualize() {
   };
 
 
+
+  const getFileResponse = async () => {
+    const response = await axios.post('/api/file_storer');
+    file_Id_DropDown = response.data.file_Id;
+
+    console.log(file_Id_DropDown);
+
+    return file_Id_DropDown;
+  }
  
-const fileID = axios.get('/api/file_storer');
 
 
 const handleThreadRun = async () => {
 
-   const assistant = await axios.post('/api/create-assistant', { fileID });
+  file_Id_DropDown = await getFileResponse();
+
+  const assistant = await axios.post('/api/create-assistant', { file_Id_DropDown });
 
 
   console.log('Assistant created with ID:', assistant.data.id);
 
-  const thread = await axios.post('/api/create-thread', { fileID, assistantId: assistant.data.id, selectedValueQ1, selectedValueQ2, Info});
+  const thread = await axios.post('/api/create-thread', { file_Id_DropDown, assistantId: assistant.data.id, selectedValueQ1, selectedValueQ2, Info});
   console.log('Thread created with ID:', thread.data.id);
   
 
