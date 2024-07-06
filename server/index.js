@@ -154,7 +154,7 @@ app.post('/api/create-assistant', async (req, res) => {
 
 
 app.post('/api/create-assistantClean', async (req, res) => {
- const { fileId } = req.body;
+//  const { fileId } = req.body;
  try {
    const assistant = await openai.beta.assistants.create({
      name: "Data Cleanser",
@@ -163,7 +163,7 @@ app.post('/api/create-assistantClean', async (req, res) => {
      tools: [{ type: "code_interpreter" }],
      tool_resources: {
        "code_interpreter": {
-         "file_ids": [fileId],
+         "file_ids": [file_store_Id],
        },
      },
    });
@@ -177,14 +177,14 @@ app.post('/api/create-assistantClean', async (req, res) => {
  }
 });
 
-async function createThreadClean(fileId) {
+async function createThreadClean(assistantId, selectedValueQ1, selectedValueQ2, Info) {
  try {
    const thread = await openai.beta.threads.create({
      messages: [
        {
          role: "user",
-         content: "Create a csv file that cleanses the data the user has uploaded. This can be removing null values, removing irrelevant data, deduplicating the data, filtering out data outliers.",
-         attachments: [{ file_id: fileId, tools: [{ type: "code_interpreter" }] }],
+         content: "Create a csv file that cleanses the data the user has uploaded. The main cleaning to be done is " + selectedValueQ1 + ". Also keep in mind " + selectedValueQ2 + ". This is a summary of the data: " + Info + ".",
+         attachments: [{ file_id: file_store_Id, tools: [{ type: "code_interpreter" }] }],
        },
      ],
    });
@@ -217,9 +217,10 @@ async function createRunClean() {
 }
 
 app.post('/api/create-threadClean', async (req, res) => {
- const { fileId } = req.body;
+  const {assistantId, selectedValueQ1, selectedValueQ2, Info} = req.body;
+
  try {
-   const threadId = await createThreadClean(fileId);
+   const threadId = await createThreadClean(assistantId, selectedValueQ1, selectedValueQ2, Info);
    res.json({ id: threadId });
  } catch (error) {
    console.error('Error:', error);

@@ -4,6 +4,7 @@ import axios from 'axios';
 import UploadPageAfterUploading from './UploadPageAfterUploading';
 import UploadPageAfterLoadingVisualization from './UploadPageAfterLoadingVisualization';
 import styled from 'styled-components';
+import DropDownClean from './DropDownClean';
 
 const PageContainer = styled.div`
   justify-content: center;
@@ -11,6 +12,8 @@ const PageContainer = styled.div`
   height: 100vh;
   background-color: #f0f0f0;
 `;
+
+
 
 const UploadPageCleanse = () => {
   const [file, setFile] = useState(null);
@@ -61,21 +64,38 @@ const UploadPageCleanse = () => {
       setUploadFlag(true);
       setFileUploadSuccess(true);
 
-      const assistant = await axios.post('/api/create-assistantClean', { fileId });
-      console.log('Assistant created with ID:', assistant.data.id);
+      // //NEW FUNCTION
 
-      const thread = await axios.post('/api/create-threadClean', { fileId, assistantId: assistant.data.id });
-      console.log('Thread created with ID:', thread.data.id);
+      const response2 = await axios.post('/api/file_storer', {fileId});
+      console.log(response2.data)
+      
 
-      const responseFromThread = await axios.post('/api/run-threadClean');
-      const { fileUrl } = responseFromThread.data;
-      console.log('Clean data URL:', fileUrl);
-      setFileUrl(fileUrl); // Store the clean CSV file URL
-      setThreadFinishNotifier(true);
+      // //NEW FUNCTION SECTION END
+
+
+
+
+
+
+      // const assistant = await axios.post('/api/create-assistantClean', { fileId });
+      // console.log('Assistant created with ID:', assistant.data.id);
+
+      // const thread = await axios.post('/api/create-threadClean', { fileId, assistantId: assistant.data.id });
+      // console.log('Thread created with ID:', thread.data.id);
+
+      // const responseFromThread = await axios.post('/api/run-threadClean');
+      // const { fileUrl } = responseFromThread.data;
+      // console.log('Clean data URL:', fileUrl);
+      // setFileUrl(fileUrl); // Store the clean CSV file URL
+      // setThreadFinishNotifier(true);
     } catch (error) {
       console.error('Error uploading file:', error);
     }
   };
+
+
+
+  
 
   const returnfileUploadSuccess = () => fileUploadSuccess;
   const returnThreadNotifier = () => threadFinishNotifier;
@@ -88,8 +108,8 @@ const UploadPageCleanse = () => {
 
 
   const renderContentCleanse = () => {
-    if (uploadFlag && !threadFinishNotifier) {
-      return <UploadPageAfterUploading />;
+    if (uploadFlag) {
+      return <DropDownClean />;
     } else if (uploadFlag && threadFinishNotifier) {
       return <UploadPageAfterLoadingVisualization fileUrl={fileUrl} />;
     } else {
