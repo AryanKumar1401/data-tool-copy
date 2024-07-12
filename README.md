@@ -1,7 +1,9 @@
-# datatool.tech
+# [datatool.tech](https://www.datatool.tech)
 
 ## Overview
-**datatool.tech** is a web-based AI data assistant that allows users to upload datasets, clean them, and generate insightful visualizations. This tool leverages the power of AI assisted tools for data cleaning and visualization tasks, providing an interactive and user-friendly experience.
+**[datatool.tech](https://www.datatool.tech)** is a web-based AI data assistant that allows users to upload datasets, clean them, and generate insightful visualizations. This tool leverages the power of GPT-4 for data cleaning and visualization tasks, providing an interactive and user-friendly experience.
+
+## Features
 
 ## Features
 - **Data Upload**: Upload CSV files for processing.
