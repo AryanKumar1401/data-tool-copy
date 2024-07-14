@@ -72,7 +72,7 @@ const handleThreadRun = async () => {
 
   //file_Id_DropDown = await getFileResponse();
 
-  const assistant = await axios.post('/api/create-assistantClean');
+  const assistant = await axios.post('/api/create-assistant');
 
 
   console.log('Assistant created with ID:', assistant.data.id);

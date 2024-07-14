@@ -136,45 +136,6 @@ const handleThreadRun = async () => {
 </div>
 
 
-{/* <div class="bg-gray-100 flex items-center justify-center h-screen font-mono">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"></link>
-
-<div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-    
-    <form class="space-y-6">
-        <div>
-            <label for="graph-type" class="block text-gray-600 font-medium mb-2">What sort of graph are you looking to create?</label>
-            <select id="graph-type" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" value={selectedValueQ1} onChange={handleChangeQ1}>
-    <option value="Bar">Bar</option>
-    <option value="Line">Line</option>
-    <option value="Pie">Pie</option>
-    <option value="Scatter">Scatterplot</option>
-    <option value="Geomap">Geomap</option>
-    <option value="Pairplots">Pairplot</option>
-            </select>
-        </div>
-        
-        <div>
-            <label for="dataset-purpose" class="block text-gray-600 font-medium mb-2">What is the main purpose of your dataset?</label>
-            <select id="dataset-purpose" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" value={selectedValueQ2} onChange={handleChangeQ2}>
-               <option value="Exploratory">Exploratory data analysis</option>
-    <option value="Present">Presentation</option>
-    <option value="Trend">Trend Identification</option>
-            </select>
-        </div>
-        
-        <div>
-            <label for="trends" class="block text-gray-600 font-medium mb-2">Are there any specific trends you are interested in exploring?</label>
-            <input type="text" id="trends" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter trends here" value={Info}
-      onChange={handleInfoChange} />
-        </div>
-        
-        <button onClick={handleThreadRun}>Submit</button>
-    </form>
-</div>
-
-</div> */}
-
     </PageContainer>
       )
     }

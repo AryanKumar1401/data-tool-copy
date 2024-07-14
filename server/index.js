@@ -153,51 +153,6 @@ app.post('/api/create-assistant', async (req, res) => {
 //CLEANSER START
 
 
-app.post('/api/create-assistantClean', async (req, res) => {
-//  const { fileId } = req.body;
- try {
-   const assistant = await openai.beta.assistants.create({
-     name: "Data Cleanser",
-     description: "You are great at cleaning data. You analyze data present in .csv files, understand trends, missing values, and corrections to be made, and make necessary adjustments. You also share a brief text summary of the cleaning you have performed. Your final output should be the file produced.",
-     model: "gpt-4o",
-     tools: [{ type: "code_interpreter" }],
-     tool_resources: {
-       "code_interpreter": {
-         "file_ids": [file_store_Id],
-       },
-     },
-   });
-
-   console.log('Assistant created successfully:', assistant.id);
-   storedAssistantId = assistant.id;
-   res.json({ id: assistant.id });
- } catch (error) {
-   console.error('Error creating assistant:', error);
-   res.status(500).json({ message: 'Failed to create assistant.' });
- }
-});
-
-async function createThreadClean(assistantId, selectedValueQ1, selectedValueQ2, Info) {
- try {
-   const thread = await openai.beta.threads.create({
-     messages: [
-       {
-         role: "user",
-         content: "Create a csv file that cleanses the data the user has uploaded. The main cleaning to be done is " + selectedValueQ1 + ". Also keep in mind " + selectedValueQ2 + ". This is a summary of the data: " + Info + ".",
-         attachments: [{ file_id: file_store_Id, tools: [{ type: "code_interpreter" }] }],
-       },
-     ],
-   });
-
-
-   storedThreadId = thread.id;
-   console.log('Thread created successfully:', thread.id);
-   return storedThreadId;
- } catch (error) {
-   console.error('Error creating thread:', error);
-   throw new Error('Failed to create thread.');
- }
-}
 
 async function createRunClean() {
  try {
@@ -220,7 +175,7 @@ app.post('/api/create-threadClean', async (req, res) => {
   const {assistantId, selectedValueQ1, selectedValueQ2, Info} = req.body;
 
  try {
-   const threadId = await createThreadClean(assistantId, selectedValueQ1, selectedValueQ2, Info);
+   const threadId = await createThread("Create a csv file that cleanses the data the user has uploaded. The main cleaning to be done is " + selectedValueQ1 + ". Also keep in mind " + selectedValueQ2 + ". This is a summary of the data: " + Info + ".");
    res.json({ id: threadId });
  } catch (error) {
    console.error('Error:', error);
@@ -297,13 +252,13 @@ app.post('/api/run-threadClean', async (req, res) => {
 
 
 
-async function createThread(assistantId, selectedValueQ1, selectedValueQ2, Info) {
+async function createThread(msg) {
  try {
    const thread = await openai.beta.threads.create({
      messages: [
        {
          role: "user",
-         content: "create a graph for this file. You should create a " + selectedValueQ1 + " graph. The purpose of the data visualization should be " +  selectedValueQ2 + ". These are the specific trends you should focus on exploring " + Info + ".",
+         content: msg,
          attachments: [{ file_id: file_store_Id, tools: [{ type: "code_interpreter" }] }],
        },
      ],
@@ -354,7 +309,7 @@ app.post('/api/create-thread', async (req, res) => {
   const {assistantId, selectedValueQ1, selectedValueQ2, Info} = req.body;
  
  try {
-   const threadId = await createThread(assistantId, selectedValueQ1, selectedValueQ2, Info);
+   const threadId = await createThread("create a graph for this file. You should create a " + selectedValueQ1 + " graph. The purpose of the data visualization should be " +  selectedValueQ2 + ". These are the specific trends you should focus on exploring " + Info + ".");
    res.json({ id: threadId });
  } catch (error) {
    console.error('Error:', error);

@@ -52,10 +52,10 @@ function App() {
             </Link>
           </div>
           <nav className="flex space-x-4">
-            <Link to="/" className="nav-link text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Main</Link>
-            <Link to="/viz" className="nav-link text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Explore</Link>
-            <Link to="/pricing" className="nav-link text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Pricing</Link>
-            <Link to="/contact" className="nav-link text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Contact</Link>
+            <Link to="/" className="nav-link rounded-md text-white font-bold text-lg hover:bg-white hover:text-black hover:shadow px-3 py-2 ">Main</Link>
+            <Link to="/viz" className="nav-link rounded-md text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Explore</Link>
+            <Link to="/pricing" className="nav-link rounded-md text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Pricing</Link>
+            {/* <Link to="/contact" className="nav-link text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Contact</Link> */}
           </nav>
           {user ? (
             <span className="text-white font-bold text-lg">Logged in
