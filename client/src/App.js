@@ -53,9 +53,9 @@ function App() {
           </div>
           <nav className="flex space-x-4">
             <Link to="/" className="nav-link rounded-md text-white font-bold text-lg hover:bg-white hover:text-black hover:shadow px-3 py-2 ">Main</Link>
-            <Link to="/viz" className="nav-link rounded-md text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Explore</Link>
+            <Link to="/choose" className="nav-link rounded-md text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Explore</Link>
             <Link to="/pricing" className="nav-link rounded-md text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Pricing</Link>
-            {/* <Link to="/contact" className="nav-link text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Contact</Link> */}
+            <a href="/#contact"className="nav-link text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Contact</a>
           </nav>
           {user ? (
             <span className="text-white font-bold text-lg">Logged in
@@ -82,7 +82,7 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/pricing" element={<PricingPage />} />
-            <Route path="/viz" element={<VizualizeOrClean />} />
+            <Route path="/choose" element={<VizualizeOrClean />} />
             <Route path="/cleanse" element={<UploadPageCleanse />} />
             <Route path="/chat" element={<UploadPageAfterLoadingVisualization />} />
             <Route path="/dropdownviz" element={<DropDownVisualize />} />
