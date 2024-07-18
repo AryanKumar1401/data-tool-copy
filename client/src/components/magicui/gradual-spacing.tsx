@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "../../lib/utils.ts";
+import { cn } from "../../lib/utils.tsx";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import React from "react";
 

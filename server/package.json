@@ -14,8 +14,8 @@
     "sharp": "^0.33.4"
   },
   "scripts": {
-    "start": "node index.js",
-    "server": "nodemon index.js"
+    "start": "node --max-http-header-size=100000000 index.js",
+    "server": "nodemon --max-http-header-size=64555 index.js"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
