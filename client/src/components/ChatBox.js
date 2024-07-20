@@ -58,7 +58,8 @@ const ChatBot = ({ fileId }) => {
   };
 
   return (
-    <div className="flex flex-col items-center w-1/3 ml-5 bg-white p-5 border border-gray-300 h-4/5 overflow-y-auto rounded-lg shadow-lg">
+    // className="flex flex-col items-center w-1/3 ml-5 bg-white p-5 border border-gray-300 h-4/5 overflow-y-auto rounded-lg shadow-lg"
+    <div className="flex flex-col items-center w-1/3 bg-white p-5 border border-gray-300 h-4/5 overflow-y-auto rounded-lg shadow-lg mx-auto">
       <div className="flex flex-col items-start w-full mt-5">
         {messages.map((msg, index) => (
           <div key={index} className={`p-2 rounded my-1 ${msg.isUser ? 'bg-gray-900 text-white self-end rounded-full' : 'bg-gray-200 text-black self-start rounded-full'}`}>

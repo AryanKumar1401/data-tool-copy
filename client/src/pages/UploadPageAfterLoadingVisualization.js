@@ -7,7 +7,7 @@ import { fileContentExporter, imageSrcExport } from './UploadPage';
 import { imageSrcExportDDV } from './DropDownVisualize';
 
 const PageContainer = styled.div`
-  display: flex;
+  display: block;
   justify-content: center;
   align-items: center;
   height: 100vh;
@@ -86,8 +86,11 @@ const UploadPageAfterLoadingVisualization = ({ fileUrl }) => {
   }, []);
 
   return (
-    <PageContainer>
-      <div className="flex flex-col items-center w-1/3 ml-5 bg-white p-5 border border-gray-300 h-4/5 overflow-y-auto">
+    // className="flex flex-col items-center w-1/3 ml-5 bg-white p-5 border border-gray-300 h-4/5 overflow-y-auto"
+    <PageContainer className="items-center bg-white p-5 border border-gray-300 h-4/5 overflow-y-auto">
+
+      <h1>Your Visualization</h1>
+      <div className="flex flex-col items-center w-1/2 bg-white p-5 border border-gray-300 h-4/5 overflow-y-auto rounded-lg shadow-lg mx-auto">
       {imageSrcExportDDV && <img src={imageSrcExportDDV} alt="Uploaded Visualization" />}
       {fileUrl && (
         <a href={fileUrl} download className="mt-3 text-blue-500 hover:underline">
@@ -95,6 +98,9 @@ const UploadPageAfterLoadingVisualization = ({ fileUrl }) => {
         </a>
       )}
       </div>
+      <br></br>
+
+      <h1>Talk to me!</h1>
       <ChatBox
         messages={messages}  
         input={input}
