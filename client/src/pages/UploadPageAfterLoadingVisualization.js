@@ -5,6 +5,9 @@ import axios from 'axios';
 import AssistantAPIKeyFunctions from '../components/AssistantAPIKeyFunctions';
 import { fileContentExporter, imageSrcExport } from './UploadPage';
 import { imageSrcExportDDV } from './DropDownVisualize';
+import GridPattern from '../components/magicui/background.tsx';
+import BoxReveal from '../components/magicui/box-reveal.tsx';
+
 
 const PageContainer = styled.div`
   display: block;
@@ -87,9 +90,18 @@ const UploadPageAfterLoadingVisualization = ({ fileUrl }) => {
 
   return (
     // className="flex flex-col items-center w-1/3 ml-5 bg-white p-5 border border-gray-300 h-4/5 overflow-y-auto"
-    <PageContainer className="items-center bg-white p-5 border border-gray-300 h-4/5 overflow-y-auto">
+    <div>
+        <GridPattern numSquares={200} className='w-screen h-screen' maxOpacity={0.75}
+      />
 
-      <h1>Your Visualization</h1>
+
+    <PageContainer className="items-center bg-white p-5 border border-gray-300 h-4/5 overflow-y-auto">
+      
+        <BoxReveal boxColor={"white"} duration={0.5}>
+        <h1 class="text-xl font-bold tracking-tight text-black sm:text-5xl text-center">
+          File Processed<span className="text-black">.</span>
+        </h1>
+      </BoxReveal>
       <div className="flex flex-col items-center w-1/2 bg-white p-5 border border-gray-300 h-4/5 overflow-y-auto rounded-lg shadow-lg mx-auto">
       {imageSrcExportDDV && <img src={imageSrcExportDDV} alt="Uploaded Visualization" />}
       {fileUrl && (
@@ -99,8 +111,12 @@ const UploadPageAfterLoadingVisualization = ({ fileUrl }) => {
       )}
       </div>
       <br></br>
-
-      <h1>Talk to me!</h1>
+      <BoxReveal boxColor={"black"} duration={0.5}>
+        <h1 class="text-xl font-bold tracking-tight text-black sm:text-5xl text-center">
+          Talk to me!
+        </h1>
+      </BoxReveal>
+     
       <ChatBox
         messages={messages}  
         input={input}
@@ -108,6 +124,7 @@ const UploadPageAfterLoadingVisualization = ({ fileUrl }) => {
         handleChatSubmit={handleChatSubmit}
       />
     </PageContainer>
+    </div>
   );
 };
 
