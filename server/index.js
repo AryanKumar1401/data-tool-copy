@@ -15,6 +15,9 @@ const PORT = process.env.PORT || 3000;
 
 const serviceAccount = process.env.FIREBASE_PATH; // Replace with your Firebase service account key
 
+if (!serviceAccount) {
+  throw new Error('FIREBASE_PATH environment variable is not set or invalid.');
+}
 
 admin.initializeApp({
  credential: admin.credential.cert(JSON.parse(serviceAccount)),
