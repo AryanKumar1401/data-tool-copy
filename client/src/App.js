@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import GlobalStyles from './GlobalStyles';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
@@ -18,6 +18,14 @@ import ContactPage from './pages/ContactPage';
 
 
 function App() {
+
+  // const navigate = useNavigate();
+  // const navigateToExplore = () => {
+  //   navigate('/maintain');
+  // };
+
+
+
   const [showAuth, setShowAuth] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -54,7 +62,7 @@ function App() {
           <nav className="flex space-x-4">
             <Link to="/" className="nav-link rounded-md text-white font-bold text-lg hover:bg-white hover:text-black hover:shadow px-3 py-2 ">Main</Link>
             <Link to="/choose" className="nav-link rounded-md text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Explore</Link>
-            <Link to="/pricing" className="nav-link rounded-md text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Pricing</Link>
+            <Link to="/maintain" className="nav-link rounded-md text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Pricing</Link>
             <Link to="/contact" className="nav-link rounded-md text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Contact</Link>
           </nav>
           {user ? (
@@ -68,6 +76,7 @@ function App() {
             </span>
           ) : (
             <button
+            // 
               onClick={() => setShowAuth(true)}
               className="bg-white border-2 border-gray-800 text-gray-800 rounded-md px-4 py-2 hover:bg-gray-100"
             >
