@@ -15,6 +15,7 @@ import UploadPageCleanse from './pages/UploadPageCleanse';
 import UploadPageAfterLoadingVisualization from './pages/UploadPageAfterLoadingVisualization';
 import DropDownVisualize from './pages/DropDownVisualize';
 import Maintenance from './pages/MaintenancePage';
+import contactPage from './pages/contactPage';
 import { DropdownVizProvider } from './components/DropdownVizContext'; // Ensure correct import
 
 function App() {
@@ -55,7 +56,7 @@ function App() {
             <Link to="/" className="nav-link rounded-md text-white font-bold text-lg hover:bg-white hover:text-black hover:shadow px-3 py-2 ">Main</Link>
             <Link to="/choose" className="nav-link rounded-md text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Explore</Link>
             <Link to="/pricing" className="nav-link rounded-md text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Pricing</Link>
-            <a href="/#contact"className="nav-link text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Contact</a>
+            <Link to="/contact" className="nav-link rounded-md text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Contact</Link>
           </nav>
           {user ? (
             <span className="text-white font-bold text-lg">Logged in
@@ -87,6 +88,7 @@ function App() {
             <Route path="/chat" element={<UploadPageAfterLoadingVisualization />} />
             <Route path="/dropdownviz" element={<DropDownVisualize />} />
             <Route path="/maintain" element={<Maintenance />} />
+            <Route path="/contact" element={<contactPage />} />
           </Routes>
           {showAuth && (
             <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
