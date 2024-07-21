@@ -1,32 +1,15 @@
 {
   "files": {
-<<<<<<< HEAD
-    "main.css": "/static/css/main.6424d176.css",
-    "main.js": "/static/js/main.a84a1775.js",
-    "static/js/453.eeb35afc.chunk.js": "/static/js/453.eeb35afc.chunk.js",
-    "index.html": "/index.html",
-    "main.6424d176.css.map": "/static/css/main.6424d176.css.map",
-    "main.a84a1775.js.map": "/static/js/main.a84a1775.js.map",
-    "453.eeb35afc.chunk.js.map": "/static/js/453.eeb35afc.chunk.js.map"
-  },
-  "entrypoints": [
-    "static/css/main.6424d176.css",
-    "static/js/main.a84a1775.js"
-=======
     "main.css": "/static/css/main.97957050.css",
-    "main.js": "/static/js/main.15d25a11.js",
+    "main.js": "/static/js/main.9b9c5f06.js",
     "static/js/453.eeb35afc.chunk.js": "/static/js/453.eeb35afc.chunk.js",
     "index.html": "/index.html",
     "main.97957050.css.map": "/static/css/main.97957050.css.map",
-    "main.15d25a11.js.map": "/static/js/main.15d25a11.js.map",
+    "main.9b9c5f06.js.map": "/static/js/main.9b9c5f06.js.map",
     "453.eeb35afc.chunk.js.map": "/static/js/453.eeb35afc.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.97957050.css",
-    "static/js/main.15d25a11.js"
-<<<<<<< Updated upstream
-=======
->>>>>>> 64c119aa126ca6ea6a5efe36a9850969839a58f3
->>>>>>> Stashed changes
+    "static/js/main.9b9c5f06.js"
   ]
 }
