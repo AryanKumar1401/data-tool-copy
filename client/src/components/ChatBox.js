@@ -3,13 +3,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 
-const ChatBot = ({ fileId }) => {
-  const [messages, setMessages] = useState([]);
+const ChatBot = ({ fileId, messages, setMessages }) => {
   const [input, setInput] = useState('');
 
   useEffect(() => {
     const fetchInitialMessage = async () => {
       try {
+        if (!messages) {
         const response = await axios.post('/api/get-initial-response', { fileId });
         // const botMessages = response.data.messages.map(message => ({
         //   text: message.content.find(content => content.type === 'text').text,
@@ -25,13 +25,14 @@ const ChatBot = ({ fileId }) => {
         console.log(botMessages);
         setMessages((prevMessages) => [...prevMessages, ...botMessages]);
         console.log(messages);
+      }
       } catch (error) {
         console.error('Error fetching initial message:', error);
       }
     };
 
     fetchInitialMessage();
-  }, [fileId]);
+  }, [fileId, setMessages]);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -79,7 +80,7 @@ const ChatBot = ({ fileId }) => {
       />
       <button 
         onClick={handleSendMessage} 
-        className="inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600"
+        className="inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 hover:bg-white"
       >
         <svg className="w-5 h-5 rotate-90 rtl:-rotate-90" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
           <path d="m17.914 18.594-8-18a1 1 0 0 0-1.828 0l-8 18a1 1 0 0 0 1.157 1.376L8 18.281V9a1 1 0 0 1 2 0v9.281l6.758 1.689a1 1 0 0 0 1.156-1.376Z"/>

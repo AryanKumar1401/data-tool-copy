@@ -131,8 +131,7 @@ const UploadPageAfterLoadingVisualization = ({ fileUrl }) => {
             <ChatBox
               messages={messages}
               input={input}
-              setInput={setInput}
-              handleChatSubmit={handleChatSubmit}
+              setMessages={setMessages}
           
             />
             </div>
