@@ -1,28 +1,10 @@
-import {React, Fragment, useState} from 'react';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import CarouselPage from '../components/Carousel.js';
-import WordPullUp from '../components/magicui/WordPullup.tsx';
-import ShimmerButton from '../components/magicui/shiny-button.tsx';
-import ShinyButton from '../components/magicui/shiny-button.tsx';
-import AnimatedGridPattern, { GridPattern } from '../components/magicui/background.tsx';
-import Button from 'react-bootstrap/Button';
-import { cn } from '../lib/utils.ts';
-import { VelocityScroll } from '../components/magicui/scroll-based-velocity.tsx';
-import GradualSpacing from '../components/magicui/gradual-spacing.tsx';
-import AnimatedGradientText from '../components/magicui/animated-gradient-text.tsx';
-import Calendar, { CenturyView } from 'react-calendar';
-import { BentoCard, BentoGrid } from '../components/magicui/bento-grid.tsx';
-import Meteors from '../components/magicui/meteors.tsx';
-import WordFadeIn from '../components/magicui/word-fade-in.tsx';
-import BoxReveal from '../components/magicui/box-reveal.tsx';
-import axios from 'axios';
+import React from 'react';
 
 
 
 
 
-const contactPage = () => {
+const ContactPage = () => {
     return (
         <div className="h-screen w-screen items-center relative justify-center bg-background md:shadow-xl pb-24 font-mono">
         <section class="bg-gray-900" id = 'contact'>
@@ -52,4 +34,4 @@ const contactPage = () => {
 
 };
 
-export default contactPage;
+export default ContactPage;

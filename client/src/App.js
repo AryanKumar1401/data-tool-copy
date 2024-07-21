@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import * as ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import GlobalStyles from './GlobalStyles';
 import HomePage from './pages/HomePage';
@@ -15,8 +14,8 @@ import UploadPageCleanse from './pages/UploadPageCleanse';
 import UploadPageAfterLoadingVisualization from './pages/UploadPageAfterLoadingVisualization';
 import DropDownVisualize from './pages/DropDownVisualize';
 import Maintenance from './pages/MaintenancePage';
-import contactPage from './pages/contactPage';
-import { DropdownVizProvider } from './components/DropdownVizContext'; // Ensure correct import
+import ContactPage from './pages/ContactPage';
+
 
 function App() {
   const [showAuth, setShowAuth] = useState(false);
@@ -88,7 +87,7 @@ function App() {
             <Route path="/chat" element={<UploadPageAfterLoadingVisualization />} />
             <Route path="/dropdownviz" element={<DropDownVisualize />} />
             <Route path="/maintain" element={<Maintenance />} />
-            <Route path="/contact" element={<contactPage />} />
+            <Route path="/contact" element={<ContactPage />} />
           </Routes>
           {showAuth && (
             <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">

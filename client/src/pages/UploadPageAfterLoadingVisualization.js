@@ -20,6 +20,7 @@ const PageContainer = styled.div`
 const UploadPageAfterLoadingVisualization = ({ fileUrl }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
+  const [chatVisible, setChatVisible] = useState(true);
 
   const {
     handleFileChange,
@@ -91,18 +92,17 @@ const UploadPageAfterLoadingVisualization = ({ fileUrl }) => {
   return (
     // className="flex flex-col items-center w-1/3 ml-5 bg-white p-5 border border-gray-300 h-4/5 overflow-y-auto"
     <div>
-        <GridPattern numSquares={200} className='w-screen h-screen' maxOpacity={0.75}
-      />
 
 
-    <PageContainer className="items-center bg-white p-5 border border-gray-300 h-4/5 overflow-y-auto">
+
+    <PageContainer className="items-center cols-2 bg-white p-5 border border-gray-300 overflow-y-auto">
       
         <BoxReveal boxColor={"white"} duration={0.5}>
         <h1 class="text-xl font-bold tracking-tight text-black sm:text-5xl text-center">
           File Processed<span className="text-black">.</span>
         </h1>
       </BoxReveal>
-      <div className="flex flex-col items-center w-1/2 bg-white p-5 border border-gray-300 h-4/5 overflow-y-auto rounded-lg shadow-lg mx-auto">
+      <div className="flex flex-col items-center w-2/3 bg-white p-5 border border-gray-300 h-4/5 overflow-y-auto rounded-lg shadow-lg mr-auto ml-20">
       {imageSrcExportDDV && <img src={imageSrcExportDDV} alt="Uploaded Visualization" />}
       {fileUrl && (
         <a href={fileUrl} download className="mt-3 text-blue-500 hover:underline">
@@ -110,19 +110,34 @@ const UploadPageAfterLoadingVisualization = ({ fileUrl }) => {
         </a>
       )}
       </div>
-      <br></br>
-      <BoxReveal boxColor={"black"} duration={0.5}>
-        <h1 class="text-xl font-bold tracking-tight text-black sm:text-5xl text-center">
-          Talk to me!
-        </h1>
-      </BoxReveal>
-     
-      <ChatBox
-        messages={messages}  
-        input={input}
-        setInput={setInput}
-        handleChatSubmit={handleChatSubmit}
-      />
+
+
+        {/* Button to toggle chatbox visibility */}
+        <button 
+          className={`fixed bottom-4 right-4 ${chatVisible ? 'bg-red-500' : 'bg-blue-500'} text-white p-2 rounded`}
+          onClick={() => setChatVisible(!chatVisible)}
+        >
+          {chatVisible ? 'Close Chat' : 'Open Chat'}
+        </button>
+        {chatVisible && (
+          // <div className="fixed bottom-4 left-4 bg-white border border-gray-300 rounded-lg shadow-lg p-4 w-1/3">
+          //   <button 
+          //     className="absolute top-2 right-2 text-gray-500"
+          //     onClick={() => setChatVisible(false)}
+          //   >
+          //     &#10005;
+          //   </button>
+          <div className="fixed bottom-4 right-4 bg-white border border-gray-300 rounded-lg mb-12 w-1/4 h-2/3">
+            <ChatBox
+              messages={messages}
+              input={input}
+              setInput={setInput}
+              handleChatSubmit={handleChatSubmit}
+          
+            />
+            </div>
+
+        )}
     </PageContainer>
     </div>
   );
