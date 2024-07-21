@@ -88,6 +88,34 @@ const UploadPageAfterLoadingVisualization = ({ fileUrl }) => {
     const cleanFileUrl = cleanFileUrlReturn();
     setCleanFileUrlLocal(cleanFileUrl);
   }, []);
+  useEffect(() => {
+    const fetchInitialMessage = async () => {
+     
+      try {
+        const response = await axios.post('/api/get-initial-response');
+        // const botMessages = response.data.messages.map(message => ({
+        //   text: message.content.find(content => content.type === 'text').text,
+        //   isUser: false,
+        // }));
+        const runId = response.data.run_id;
+        const botMessages = response.data.messages
+        .filter(message => message.role === "assistant" && message.run_id === runId)
+        .map(message => ({
+          text: message.content.find(content => content.type === 'text').text,
+          isUser: false,
+        }));
+        console.log(botMessages);
+        setMessages((prevMessages) => [...prevMessages, ...botMessages]);
+        console.log(messages);
+      
+      } catch (error) {
+        console.error('Error fetching initial message:', error);
+      }
+    };
+    fetchInitialMessage();
+   
+    
+  }, []);
 
   return (
     // className="flex flex-col items-center w-1/3 ml-5 bg-white p-5 border border-gray-300 h-4/5 overflow-y-auto"

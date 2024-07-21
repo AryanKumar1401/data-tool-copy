@@ -1,38 +1,41 @@
 // src/components/ChatBot.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
 
 const ChatBot = ({ fileId, messages, setMessages }) => {
   const [input, setInput] = useState('');
+ 
 
-  useEffect(() => {
-    const fetchInitialMessage = async () => {
-      try {
-        if (!messages) {
-        const response = await axios.post('/api/get-initial-response', { fileId });
-        // const botMessages = response.data.messages.map(message => ({
-        //   text: message.content.find(content => content.type === 'text').text,
-        //   isUser: false,
-        // }));
-        const runId = response.data.run_id;
-        const botMessages = response.data.messages
-        .filter(message => message.role === "assistant" && message.run_id === runId)
-        .map(message => ({
-          text: message.content.find(content => content.type === 'text').text,
-          isUser: false,
-        }));
-        console.log(botMessages);
-        setMessages((prevMessages) => [...prevMessages, ...botMessages]);
-        console.log(messages);
-      }
-      } catch (error) {
-        console.error('Error fetching initial message:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchInitialMessage = async () => {
+     
+  //     try {
 
-    fetchInitialMessage();
-  }, [fileId, setMessages]);
+  //       const response = await axios.post('/api/get-initial-response', { fileId });
+  //       // const botMessages = response.data.messages.map(message => ({
+  //       //   text: message.content.find(content => content.type === 'text').text,
+  //       //   isUser: false,
+  //       // }));
+  //       const runId = response.data.run_id;
+  //       const botMessages = response.data.messages
+  //       .filter(message => message.role === "assistant" && message.run_id === runId)
+  //       .map(message => ({
+  //         text: message.content.find(content => content.type === 'text').text,
+  //         isUser: false,
+  //       }));
+  //       console.log(botMessages);
+  //       setMessages((prevMessages) => [...prevMessages, ...botMessages]);
+  //       console.log(messages);
+      
+  //     } catch (error) {
+  //       console.error('Error fetching initial message:', error);
+  //     }
+  //   };
+  //   fetchInitialMessage();
+   
+    
+  // }, []);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();

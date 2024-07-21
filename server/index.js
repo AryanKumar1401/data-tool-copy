@@ -388,7 +388,7 @@ app.post('/api/run-thread', async (req, res) => {
 });
 
 app.post('/api/get-initial-response', async (req, res) => {
-  const { fileId } = req.body;
+
   try {
     const response = await openai.beta.threads.messages.create(
       storedThreadId,
