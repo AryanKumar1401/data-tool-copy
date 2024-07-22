@@ -34,7 +34,7 @@ const HomePage = () => {
 
   // Function to handle button click and navigate to another route
   const navigateToExplore = () => {
-    navigate('/viz');
+    navigate('/choose');
   };
 
   return (
