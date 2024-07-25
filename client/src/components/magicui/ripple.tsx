@@ -23,7 +23,7 @@ const Ripple = React.memo(() => {
         ></div>
       ))}
     </div>
-  );
+  ); 
 });
 
 Ripple.displayName = "Ripple";

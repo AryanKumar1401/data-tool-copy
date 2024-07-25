@@ -8,6 +8,10 @@ const admin = require('firebase-admin');
 const { useAsyncValue } = require('react-router-dom');
 const app = express();
 require('dotenv').config();
+const cors = require('cors');
+
+
+app.use(cors());
 
 
 const PORT = process.env.PORT || 3000;

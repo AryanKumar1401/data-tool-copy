@@ -4,7 +4,6 @@ import axios from 'axios';
 import UploadPageAfterUploading from './UploadPageAfterUploading';
 import UploadPageAfterLoadingVisualization from './UploadPageAfterLoadingVisualization';
 import styled from 'styled-components';
-import Select from "react-select";
 
 export let imageSrcExportDDV = '';
 let file_Id_DropDown = '';
@@ -15,6 +14,7 @@ const PageContainer = styled.div`
   height: 100vh;
   background-color: #f0f0f0;
 `;
+
 
 
 

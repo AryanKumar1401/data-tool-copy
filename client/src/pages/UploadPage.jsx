@@ -48,16 +48,13 @@ const UploadPage = () => {
     formData.append('file', file);
 
     try {
-      const response = await fetch('/upload', formData, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      const response = await axios.post('/upload', formData, {
+        method: 'POST'
         
     });
 
       console.log(response);
-      
+      console.log(response.data);
       const fileId = response.data.fileId;
       console.log('File uploaded with ID:', fileId);
       setFileUploadSuccess(true);
