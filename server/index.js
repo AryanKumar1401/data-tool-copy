@@ -8,6 +8,8 @@ const admin = require('firebase-admin');
 const { useAsyncValue } = require('react-router-dom');
 const app = express();
 require('dotenv').config();
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
 
 
 const PORT = process.env.PORT || 3000;
@@ -452,6 +454,28 @@ app.post('/api/send-message', async (req, res) => {
   } catch (error) {
     console.error('Error getting initial response:', error);
     res.status(500).json({ message: 'Failed to get initial response.' });
+  }
+});
+
+app.post('/create-payment-intent', async (req, res) => {
+  try {
+    const { package_name, amount } = req.body;
+
+    // Create a PaymentIntent with the order amount and currency
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount,
+      currency: 'usd',
+      metadata: {
+        package_name: package_name
+      }
+    });
+
+    res.send({
+      clientSecret: paymentIntent.client_secret
+    });
+  } catch (error) {
+    console.error('Error creating PaymentIntent:', error);
+    res.status(500).send({ error: 'An error occurred while creating the PaymentIntent' });
   }
 });
 
