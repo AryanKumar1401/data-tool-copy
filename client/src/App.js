@@ -14,7 +14,7 @@ import UploadPageCleanse from './pages/UploadPageCleanse';
 import UploadPageAfterLoadingVisualization from './pages/UploadPageAfterLoadingVisualization';
 import DropDownVisualize from './pages/DropDownVisualize';
 import Maintenance from './pages/MaintenancePage';
-import ContactPage from './pages/contactPage';
+import ContactPage from './pages/ContactPage';
 import LogIn from './pages/LogIn';
 import SignUp from './pages/SignUp';
 
