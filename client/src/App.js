@@ -26,16 +26,18 @@ function App() {
   //   navigate('/maintain');
   // };
   const [ user, setUser ] = useState(null);
+  const [ verified, setVerified ] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     onAuthStateChanged(auth, (auth_user) => {
       if (auth_user) {
         if (!auth_user.emailVerified) {
-          navigate("/login");
+          setVerified(false);
         } else {
-          setUser(auth_user)
+          setVerified(true);
         }
+        setUser(auth_user)
       } else {
         setUser(null)
       }
@@ -55,7 +57,7 @@ function App() {
   return (
     <>
       <Routes>
-        <Route element={ <RootLayout user={ user } signOut={ handleLogout } /> } >
+        <Route element={ <RootLayout user={ user } signOut={ handleLogout } verified={ verified } /> } >
           <Route path="/" element={ <HomePage /> } />
           <Route path="/about" element={ <AboutPage /> } />
           <Route path="/upload" element={ <UploadPage /> } />
@@ -74,7 +76,7 @@ function App() {
   );
 }
 
-function RootLayout({ user, signOut }) {
+function RootLayout({ user, signOut, verified }) {
   const navigate = useNavigate();
 
 
@@ -101,7 +103,7 @@ function RootLayout({ user, signOut }) {
           <Link to="/maintain" className="nav-link rounded-md text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Pricing</Link>
           <Link to="/contact" className="nav-link rounded-md text-white font-bold text-lg hover:bg-white hover:rounded-md hover:text-black hover:shadow px-3 py-2">Contact</Link>
         </nav>
-        { user ? (
+        { user ? verified ?(
           <span className="text-white font-bold text-lg">{ user.displayName }
             <button
               onClick={ signOut }
@@ -111,14 +113,21 @@ function RootLayout({ user, signOut }) {
             </button>
           </span>
         ) : (
-          <button
-            // 
-            onClick={ () => navigate("/login") }
-            className="bg-white border-2 border-gray-800 text-gray-800 rounded-md px-4 py-2 hover:bg-gray-100"
-          >
-            Sign Up / Log In
-          </button>
-        ) }
+            <button
+              onClick={ () => navigate("/login") }
+              className="bg-white border-2 border-gray-800 text-gray-800 rounded-md px-4 py-2 hover:bg-gray-100"
+            >
+              Verify Email
+            </button>
+        )
+          : (
+            <button
+              onClick={ () => navigate("/login") }
+              className="bg-white border-2 border-gray-800 text-gray-800 rounded-md px-4 py-2 hover:bg-gray-100"
+            >
+              Sign Up / Log In
+            </button>
+          ) }
       </header>
 
       <div className="flex-1 mt-20">

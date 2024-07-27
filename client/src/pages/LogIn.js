@@ -45,6 +45,10 @@ function LogIn() {
         sendEmailVerification(user);
     }
 
+    const changeUser = () => {
+        auth.signOut()
+    }
+
     useEffect(() => {
         onAuthStateChanged(auth, (auth_user) => {
             if (auth_user) {
@@ -56,6 +60,7 @@ function LogIn() {
                 }
             } else {
                 setUser(null)
+                setNeedsVerification(false);
             }
         });
     }, [ user ]);
@@ -97,11 +102,16 @@ function LogIn() {
             </div>
             { needsVerification ?
                 <div className='flex flex-col justify-center px-28 w-1/2'>
-                    <p className='mb-0'>A verification email has been sent to you. </p>
+                    <p className='mb-0'>A verification email has been sent to you at {user?.email}. </p>
                     <p className='mt-0'>Please verify your email to proceed.</p>
-                    <div className='mb-4 self-center' >
-                        <button className='px-16 py-2.5 bg-black text-white rounded'>
+                    <div className='mb-4 self-center'>
+                        <button className='px-16 py-2.5 bg-black text-white rounded' onClick={resendVerificationEmail}>
                             Resend verification email
+                        </button>
+                    </div>
+                    <div className='mb-4 self-center'>
+                        <button className='px-16 py-2.5 bg-black text-white rounded' onClick={changeUser}>
+                            Login with a different account
                         </button>
                     </div>
                 </div> :
