@@ -126,6 +126,10 @@ const PricingPage = () => {
               </div>
             </div>
           </div>
+
+          {/**
+           * Token Packages
+           */}
           
           <div className="bg-white text-black rounded-lg shadow-xl p-8 mb-12">
             <h2 className="text-3xl font-bold text-center mb-8">Token Packages</h2>
