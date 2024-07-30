@@ -5,6 +5,8 @@ import { Elements, CardElement, useStripe, useElements } from '@stripe/react-str
 import BoxReveal from '../components/magicui/box-reveal.tsx';
 import { GridPattern } from '../components/magicui/background.tsx';
 import axios from 'axios';
+import { auth, db } from '../firebase.js';
+import { doc, increment, setDoc, updateDoc } from 'firebase/firestore';
 
 const stripePromise = loadStripe('your_publishable_key_here');
 
@@ -19,8 +21,9 @@ const StripeCardElement = () => {
 const PackageButton = ({ package_name, tokens, price }) => {
   const stripe = useStripe();
   const elements = useElements();
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentError, setPaymentError] = useState(null);
+  const [ isProcessing, setIsProcessing ] = useState(false);
+  const [ paymentError, setPaymentError ] = useState(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -29,6 +32,11 @@ const PackageButton = ({ package_name, tokens, price }) => {
 
     if (!stripe || !elements) {
       return;
+    }
+
+    if (!auth.currentUser?.emailVerified) {
+      // User not logged in or verified
+      navigate("/login")
     }
 
     try {
@@ -56,6 +64,9 @@ const PackageButton = ({ package_name, tokens, price }) => {
         if (result.paymentIntent.status === 'succeeded') {
           console.log('Payment succeeded!');
           // [UPDATE THE TOKEN BALANCE HERE]
+          await updateDoc(doc(db, "users", auth.currentUser.uid), {
+            tokens: increment(tokens),
+          });
         }
       }
     } catch (error) {
@@ -81,8 +92,15 @@ const PackageButton = ({ package_name, tokens, price }) => {
 
 const PricingPage = () => {
   const navigate = useNavigate();
+
   const navigateToExplore = () => {
-    navigate('/pricing');
+    if (auth.currentUser?.emailVerified) {
+      // Lead to payment section/page
+      navigate('/pricing');
+    } else {
+      // user not logged in or verified
+      navigate('/login');
+    }
   };
 
   const [currentTokens, setCurrentTokens] = useState(0);
