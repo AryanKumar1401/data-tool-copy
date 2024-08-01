@@ -1,261 +1,211 @@
-import {React, Fragment, useState} from 'react';
-import styled from 'styled-components';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CarouselPage from '../components/Carousel.js';
-import WordPullUp from '../components/magicui/WordPullup.tsx';
-import ShimmerButton from '../components/magicui/shiny-button.tsx';
-import ShinyButton from '../components/magicui/shiny-button.tsx';
-import AnimatedGridPattern, { GridPattern } from '../components/magicui/background.tsx';
-import Button from 'react-bootstrap/Button';
-import { cn } from '../lib/utils.ts';
-import { VelocityScroll } from '../components/magicui/scroll-based-velocity.tsx';
-import GradualSpacing from '../components/magicui/gradual-spacing.tsx';
-import AnimatedGradientText from '../components/magicui/animated-gradient-text.tsx';
-import Calendar, { CenturyView } from 'react-calendar';
-import { BentoCard, BentoGrid } from '../components/magicui/bento-grid.tsx';
-import Meteors from '../components/magicui/meteors.tsx';
-import WordFadeIn from '../components/magicui/word-fade-in.tsx';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import BoxReveal from '../components/magicui/box-reveal.tsx';
+import { GridPattern } from '../components/magicui/background.tsx';
 import axios from 'axios';
+import { auth, db } from '../firebase.js';
+import { doc, increment, setDoc, updateDoc } from 'firebase/firestore';
 
+const stripePromise = loadStripe('your_publishable_key_here');
 
+const StripeCardElement = () => {
+  return (
+    <div className="mb-4">
+      <CardElement options={{style: {base: {fontSize: '16px'}}}} />
+    </div>
+  );
+};
 
-
-const PricingPage = () => {
-
-
+const PackageButton = ({ package_name, tokens, price }) => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [ isProcessing, setIsProcessing ] = useState(false);
+  const [ paymentError, setPaymentError ] = useState(null);
   const navigate = useNavigate();
-  const navigateToExplore = () => {
-    navigate('/viz');
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setIsProcessing(true);
+    setPaymentError(null);
+
+    if (!stripe || !elements) {
+      return;
+    }
+
+    if (!auth.currentUser?.emailVerified) {
+      // User not logged in or verified
+      navigate("/login")
+    }
+
+    try {
+      // Create a payment intent on backend
+      const response = await axios.post('/create-payment-intent', {
+        package_name: package_name,
+        amount: price * 100, //amount in cents
+      });
+    
+      const { clientSecret } = response.data;
+
+      // Confirm the payment on the client
+      const result = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement),
+          billing_details: {
+            name: 'User Name', //replace with the Signed In name 
+          },
+        },
+      });
+
+      if (result.error) {
+        setPaymentError(result.error.message);
+      } else {
+        if (result.paymentIntent.status === 'succeeded') {
+          console.log('Payment succeeded!');
+          // [UPDATE THE TOKEN BALANCE HERE]
+          await updateDoc(doc(db, "users", auth.currentUser.uid), {
+            tokens: increment(tokens),
+          });
+        }
+      }
+    } catch (error) {
+      setPaymentError('An error occurred. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
+  return (
+    <form onSubmit={handleSubmit} className="mt-4">
+      {paymentError && <div className="text-red-500 mt-2">{paymentError}</div>}
+      <button 
+        type="submit" 
+        disabled={!stripe || isProcessing} 
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mt-4 w-full"
+      >
+        {isProcessing ? 'Processing...' : `Buy ${tokens} tokens for $${price}`}
+      </button>
+    </form>
+  );
+};
 
-    const [isAnnual, setIsAnnual] = useState(false);
+const PricingPage = () => {
+  const navigate = useNavigate();
 
-    const handleMonthlyClick = () => {
-        if (isAnnual) {
-          setIsAnnual(false);
-        }
-      };
-    
-      const handleAnnualClick = () => {
-        if (!isAnnual) {
-          setIsAnnual(true);
-        }
-      };
+  const navigateToExplore = () => {
+    if (auth.currentUser?.emailVerified) {
+      // Lead to payment section/page
+      navigate('/pricing');
+    } else {
+      // user not logged in or verified
+      navigate('/login');
+    }
+  };
+
+  const [currentTokens, setCurrentTokens] = useState(0);
 
   return (
-    <div className="h-screen w-screen items-center relative justify-center bg-background md:shadow-xl pb-24 font-mono">
-      <GridPattern numSquares={200} className='w-screen h-screen' maxOpacity={0.75}
-      />
-      <div className='mb-8 mx-12'>
-            <BoxReveal boxColor={"white"} duration={0.5}>
-        <h1 class="text-xl font-bold tracking-tight text-white sm:text-5xl text-center">
-          Data. Made accessible.
-        </h1>
-      </BoxReveal>
-      <BoxReveal boxColor={"white"} duration={0.5}>
-      </BoxReveal>
-      <BoxReveal boxColor={"white"} duration={0.5}>
-        <div className="mt-[1.5rem]">
-          <p className='mt-6 text-lg leading-8 text-white text-center'>
-           Our pricing options follow a token-based system, giving you low costs and maximum flexbility.
-          </p>
+    <Elements stripe={stripePromise}>
+      <div className="min-h-screen w-full bg-background font-mono">
+        <GridPattern numSquares={200} className='fixed inset-0' maxOpacity={0.75} />
+        
+        <div className='relative z-10 px-4 py-12'>
+          <BoxReveal boxColor={"white"} duration={0.5}>
+            <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-white text-center mb-4">
+              Data. Made accessible.
+            </h1>
+          </BoxReveal>
+          
+          <BoxReveal boxColor={"white"} duration={0.5}>
+            <p className='text-lg md:text-xl leading-8 text-white text-center mb-12'>
+              Our pricing options follow a token-based system, giving you low costs and maximum flexibility.
+            </p>
+          </BoxReveal>
+
+          <div className="bg-gray-100 text-black rounded-lg shadow-xl p-8 mb-12">
+            <div className="flex flex-col md:flex-row justify-around items-center space-y-8 md:space-y-0 md:space-x-8">
+              <div className="flex flex-col items-center md:items-start">
+                <h2 className="text-2xl font-semibold mb-4">What are tokens?</h2>
+                <p className="max-w-xs text-center md:text-left">A token can be seen as akin to currency. When you make a request to visualize or clean your data, you use up a certain number of tokens. When you run out of tokens, you cannot make any more requests until you buy more. As an idea, a simple bar graph would cost you approximately 0.06 tokens</p>
+              </div>
+              <div className="flex flex-col items-center md:items-start">
+                <h2 className="text-2xl font-semibold mb-4">You currently have {currentTokens} tokens</h2>
+                <p className="max-w-xs text-center md:text-left mb-4">Today's conversion rate is $1 for 1 token</p>
+                <BoxReveal boxColor={"black"} duration={0.5}>
+                  <button
+                    className="align-middle select-none font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-md py-3 px-6 rounded-lg bg-black text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
+                    type="button"
+                    onClick={navigateToExplore}
+                  >
+                    Buy tokens now
+                  </button>     
+                </BoxReveal>
+              </div>
+            </div>
+          </div>
+
+          {/**
+           * Token Packages
+           */}
+          
+          <div className="bg-white text-black rounded-lg shadow-xl p-8 mb-12">
+            <h2 className="text-3xl font-bold text-center mb-8">Token Packages</h2>
+            <StripeCardElement />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="bg-gray-100 p-6 rounded-lg shadow-md">
+                <h3 className="text-xl font-semibold mb-2">Starter</h3>
+                <p className="mb-4">100 tokens for $95 ($0.95/token)</p>
+                <PackageButton package_name="Starter" tokens={100} price={95} />
+              </div>
+              <div className="bg-gray-100 p-6 rounded-lg shadow-md">
+                <h3 className="text-xl font-semibold mb-2">Pro</h3>
+                <p className="mb-4">500 tokens for $450 ($0.90/token)</p>
+                <PackageButton package_name="Pro" tokens={500} price={450} />
+              </div>
+              <div className="bg-gray-100 p-6 rounded-lg shadow-md">
+                <h3 className="text-xl font-semibold mb-2">Enterprise</h3>
+                <p className="mb-4">2000 tokens for $1700 ($0.85/token)</p>
+                <PackageButton package_name="Enterprise" tokens={2000} price={1700} />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gray-100 text-black rounded-lg shadow-xl p-8 mb-12">
+            <h2 className="text-3xl font-bold text-center mb-8">Token Costs for Common Operations</h2>
+            <div className="flex justify-center">
+              <ul className="list-disc list-inside">
+                <li>Simple bar graph: 0.06 tokens</li>
+                <li>Scatter plot: 0.08 tokens</li>
+                <li>Line chart: 0.07 tokens</li>
+                <li>Basic data cleaning (per 1000 rows): 0.1 tokens</li>
+                <li>Advanced statistical analysis: 0.5-2 tokens (depending on complexity)</li>
+                
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-white text-black rounded-lg shadow-xl p-8">
+            <h2 className="text-3xl font-bold text-center mb-8">Frequently Asked Questions</h2>
+            <div className="max-w-3xl mx-auto">
+              <div className="mb-4">
+                <h3 className="text-xl font-semibold mb-2">What happens if I run out of tokens mid-analysis?</h3>
+                <p>The operation will pause, and you'll be prompted to purchase more tokens to continue.</p>
+              </div>
+              <div className="mb-4">
+                <h3 className="text-xl font-semibold mb-2">Can I get a refund for unused tokens?</h3>
+                <p>Tokens are non-refundable, but they don't expire as long as your account is active.</p>
+              </div>
+              <div className="mb-4">
+                <h3 className="text-xl font-semibold mb-2">How do I know how many tokens an operation will cost?</h3>
+                <p>Before confirming any operation, you'll see an estimated token cost. You can also find a full pricing breakdown in your account settings.</p>
+              </div>
+            </div>
+          </div>
         </div>
-      </BoxReveal>
- 
-      
       </div>
- <div class="bg-gray-100 text-black text-mono flex items-center justify-center min-h-80 font-mono relative">
-  <div class="text-center min">
-   
-    <div class="flex justify-around space-x-8">
-      <div class="flex flex-col items-center">
-        <h2 class="text-2xl font-semibold mb-4">What are tokens?</h2>
-        <p class="max-w-xs">A token can be seen as akin to currency. When you make a request to visualize or clean your data, you use up a certain number of tokens. When you run out of tokens, you cannot make any more requests until you buy more. As an idea, a simple bar graph would cost you approximately 0.06 tokens</p>
-       
-      </div>
-      <div class="flex flex-col items-center">
-        <h2 class="text-2xl font-semibold mb-4">You currently have X tokens</h2>
-        <p class="max-w-xs">Today's conversion rate is $1 for 1 token</p>
-        <BoxReveal boxColor={"black"} duration={0.5}>
-      <button
-  class="align-middle select-none font-mono font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-md py-3 px-6 rounded-lg bg-black-100 text-black shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
-  type="button"
-  onClick={navigateToExplore}
-      >
-  Buy tokens now.
-      </button>     
-      </BoxReveal>
-      </div>
-     
-    </div>
-  </div>
-</div>
-</div>
-    
+    </Elements>
   );
-
-
-
-
-
-
-
-
-
-
-
-
-    // <div className="h-screen w-screen bg-black flex flex-col items-center justify-center">       <div className="text-center mb-12">
-    //     <h1 className="text-4xl font-extrabold text-white">Pricing plans for teams of all sizes</h1>
-    //     <p className="text-lg text-white mt-4">
-    //       Choose an affordable plan that's packed with the best features for engaging your audience, creating customer loyalty, and driving sales.
-    //     </p>
-    //     <div className="mt-6 inline-flex rounded-md shadow-sm">
-    //       <button
-    //         onClick={handleMonthlyClick}
-    //         className={`py-2 px-4 ${!isAnnual ? 'bg-blue-600 text-white' : 'bg-white text-blue-600'} rounded-l-md border border-blue-600 hover:bg-blue-700`}
-    //       >
-    //         Monthly
-    //       </button>
-    //       <button
-    //         onClick={handleAnnualClick}
-    //         className={`py-2 px-4 ${isAnnual ? 'bg-blue-600 text-white' : 'bg-white text-blue-600'} rounded-r-md border border-blue-600 hover:bg-blue-700`}
-    //       >
-    //         Annually
-    //       </button>
-    //     </div>
-    //   </div>
-
-    //   <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-    //     <div className="bg-white rounded-lg shadow-lg p-8">
-    //       <h3 className="text-2xl font-semibold text-gray-800">Hobby</h3>
-    //       <p className="text-gray-600 mt-4">The essentials to provide your best work for clients.</p>
-    //       <div className="mt-6">
-    //         <span className="text-4xl font-extrabold text-gray-900">${isAnnual ? (15 * 12 * 0.75).toFixed(2) : 15}</span>
-    //         <span className="text-base font-medium text-gray-600">/{isAnnual ? 'year' : 'month'}</span>
-    //       </div>
-    //       <ul className="mt-6 space-y-4">
-    //         <li className="flex items-start">
-    //           <span className="text-blue-600 font-semibold">✓</span>
-    //           <span className="ml-3 text-gray-600">5 products</span>
-    //         </li>
-    //         <li className="flex items-start">
-    //           <span className="text-blue-600 font-semibold">✓</span>
-    //           <span className="ml-3 text-gray-600">Up to 1,000 subscribers</span>
-    //         </li>
-    //         <li className="flex items-start">
-    //           <span className="text-blue-600 font-semibold">✓</span>
-    //           <span className="ml-3 text-gray-600">Basic analytics</span>
-    //         </li>
-    //       </ul>
-    //       <button className="mt-8 w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-    //         Buy plan
-    //       </button>
-    //     </div>
-    //     <div className="bg-white rounded-lg shadow-lg p-8">
-    //       <h3 className="text-2xl font-semibold text-gray-800">Freelancer</h3>
-    //       <p className="text-gray-600 mt-4">The essentials to provide your best work for clients.</p>
-    //       <div className="mt-6">
-    //         <span className="text-4xl font-extrabold text-gray-900">${isAnnual ? (30 * 12 * 0.75).toFixed(2) : 30}</span>
-    //         <span className="text-base font-medium text-gray-600">/{isAnnual ? 'year' : 'month'}</span>
-    //       </div>
-    //       <ul className="mt-6 space-y-4">
-    //         <li className="flex items-start">
-    //           <span className="text-blue-600 font-semibold">✓</span>
-    //           <span className="ml-3 text-gray-600">5 products</span>
-    //         </li>
-    //         <li className="flex items-start">
-    //           <span className="text-blue-600 font-semibold">✓</span>
-    //           <span className="ml-3 text-gray-600">Up to 1,000 subscribers</span>
-    //         </li>
-    //         <li className="flex items-start">
-    //           <span className="text-blue-600 font-semibold">✓</span>
-    //           <span className="ml-3 text-gray-600">Basic analytics</span>
-    //         </li>
-    //         <li className="flex items-start">
-    //           <span className="text-blue-600 font-semibold">✓</span>
-    //           <span className="ml-3 text-gray-600">48-hour support response time</span>
-    //         </li>
-    //       </ul>
-    //       <button className="mt-8 w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-    //         Buy plan
-    //       </button>
-    //     </div>
-    //     <div className="bg-white rounded-lg shadow-lg p-8 border border-blue-600">
-    //       <h3 className="text-2xl font-semibold text-blue-600">Startup</h3>
-    //       <p className="text-gray-600 mt-4">A plan that scales with your rapidly growing business.</p>
-    //       <div className="mt-6">
-    //         <span className="text-4xl font-extrabold text-gray-900">${isAnnual ? (60 * 12 * 0.75).toFixed(2) : 60}</span>
-    //         <span className="text-base font-medium text-gray-600">/{isAnnual ? 'year' : 'month'}</span>
-    //       </div>
-    //       <ul className="mt-6 space-y-4">
-    //         <li className="flex items-start">
-    //           <span className="text-blue-600 font-semibold">✓</span>
-    //           <span className="ml-3 text-gray-600">25 products</span>
-    //         </li>
-    //         <li className="flex items-start">
-    //           <span className="text-blue-600 font-semibold">✓</span>
-    //           <span className="ml-3 text-gray-600">Up to 10,000 subscribers</span>
-    //         </li>
-    //         <li className="flex items-start">
-    //           <span className="text-blue-600 font-semibold">✓</span>
-    //           <span className="ml-3 text-gray-600">Advanced analytics</span>
-    //         </li>
-    //         <li className="flex items-start">
-    //           <span className="text-blue-600 font-semibold">✓</span>
-    //           <span className="ml-3 text-gray-600">24-hour support response time</span>
-    //         </li>
-    //         <li className="flex items-start">
-    //           <span className="text-blue-600 font-semibold">✓</span>
-    //           <span className="ml-3 text-gray-600">Marketing automations</span>
-    //         </li>
-    //       </ul>
-    //       <button className="mt-8 w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-    //         Buy plan
-    //       </button>
-    //     </div>
-    //     <div className="bg-white rounded-lg shadow-lg p-8">
-    //       <h3 className="text-2xl font-semibold text-gray-800">Enterprise</h3>
-    //       <p className="text-gray-600 mt-4">Dedicated support and infrastructure for your company.</p>
-    //       <div className="mt-6">
-    //         <span className="text-4xl font-extrabold text-gray-900">${isAnnual ? (90 * 12 * 0.75).toFixed(2) : 90}</span>
-    //         <span className="text-base font-medium text-gray-600">/{isAnnual ? 'year' : 'month'}</span>
-    //       </div>
-    //       <ul className="mt-6 space-y-4">
-    //         <li className="flex items-start">
-    //           <span className="text-blue-600 font-semibold">✓</span>
-    //           <span className="ml-3 text-gray-600">Unlimited products</span>
-    //         </li>
-    //         <li className="flex items-start">
-    //           <span className="text-blue-600 font-semibold">✓</span>
-    //           <span className="ml-3 text-gray-600">Unlimited subscribers</span>
-    //         </li>
-    //         <li className="flex items-start">
-    //           <span className="text-blue-600 font-semibold">✓</span>
-    //           <span className="ml-3 text-gray-600">Advanced analytics</span>
-    //         </li>
-    //         <li className="flex items-start">
-    //           <span className="text-blue-600 font-semibold">✓</span>
-    //           <span className="ml-3 text-gray-600">1-hour, dedicated support response time</span>
-    //         </li>
-    //         <li className="flex items-start">
-    //           <span className="text-blue-600 font-semibold">✓</span>
-    //           <span className="ml-3 text-gray-600">Marketing automations</span>
-    //         </li>
-    //         <li className="flex items-start">
-    //           <span className="text-blue-600 font-semibold">✓</span>
-    //           <span className="ml-3 text-gray-600">Custom reporting tools</span>
-    //         </li>
-    //       </ul>
-    //       <button className="mt-8 w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-    //         Buy plan
-    //       </button>
-    //     </div>
-    //   </div>
-    // </div>
-  
 };
 
 export default PricingPage;

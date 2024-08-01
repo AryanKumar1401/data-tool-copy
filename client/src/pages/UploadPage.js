@@ -161,7 +161,7 @@ const UploadPage = () => {
 
 
   const renderContentUpload = () => {
-    if (fileUploadSuccess) {
+    if (fileUploadSuccess && !threadFinishNotifier) {
       return <DropDownVisualize />;
     } else if (fileUploadSuccess && threadFinishNotifier) {
       return (<PageContainer>

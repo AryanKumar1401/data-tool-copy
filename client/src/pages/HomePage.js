@@ -194,6 +194,9 @@ const HomePage = () => {
     </div>
   </div>
 </div>
+<footer className="bg-black text-white text-center py-4 mt-auto">
+          <p>&copy; {new Date().getFullYear()} DataTool. All rights reserved.</p>
+        </footer>
 
 <footer className="bg-black text-white text-center py-4 mt-auto">
           <p>&copy; {new Date().getFullYear()} DataTool. All rights reserved.</p>
