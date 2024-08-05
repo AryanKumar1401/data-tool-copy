@@ -2,4 +2,4 @@
 *.csv
 /server/public/visualizations
 /node_modules
-/client/build
+

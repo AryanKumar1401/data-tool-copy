@@ -30,7 +30,7 @@
     "react-loading": "^2.0.3",
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.24.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "stripe": "^16.5.0",
     "styled-components": "^6.1.9",
     "tailwind-merge": "^2.3.0",

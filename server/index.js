@@ -63,6 +63,7 @@ app.use(bodyParser.json());
 
 
 // File upload route
+//ALSO add the openai call to return a list containing viz options
 app.post('/upload', upload.single('file'), async (req, res) => {
  try {
    if (!req.file) {
@@ -80,6 +81,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
 
    console.log('File uploaded successfully:', file.id);
+
 
 
    res.json({
@@ -125,7 +127,6 @@ function displayThreadMessages(messages) {
 
 
 
-
 app.post('/api/create-assistant', async (req, res) => {
 
 // const {file_store_Id} = req.body;
@@ -150,6 +151,34 @@ app.post('/api/create-assistant', async (req, res) => {
    res.status(500).json({ message: 'Failed to create assistant.' });
  }
 });
+
+var file_form_Id;
+app.post('/api/create-assistant-form', async (req, res) => {
+
+  // const {file_store_Id} = req.body;
+  const {fileId} = req.body;
+  file_form_Id = fileId;
+   
+   try {
+     const assistant = await openai.beta.assistants.create({
+       name: "Data Visualizer",
+       description: "create form options",
+       model: "gpt-4o",
+       tools: [{ type: "code_interpreter" }],
+       tool_resources: {
+         "code_interpreter": {
+           "file_ids": [fileId],
+         },
+       },
+     });
+     console.log('Form Assistant created successfully:', assistant.id);
+     storedAssistantId = assistant.id;
+     res.json({ id: assistant.id });
+   } catch (error) {
+     console.error('Error creating assistant:', error);
+     res.status(500).json({ message: 'Failed to create assistant.' });
+   }
+  });
 
 
 //CLEANSER START
@@ -304,6 +333,59 @@ app.post('/api/file_storer', async (req, res) => {
   file_store_Id = fileId
   res.json({file_Id: fileId});
 })
+
+var formThreadId;
+app.post('/api/create-form-thread', async (req, res) => {
+
+ try {
+  const thread = await openai.beta.threads.create({
+    messages: [
+      {
+        role: "user",
+        content: "for this csv, suggest appropriate visualizations. you must only return the names of the visualizations separated by commas",
+        attachments: [{ file_id: file_form_Id, tools: [{ type: "code_interpreter" }] }],
+      },
+    ],
+  });
+
+
+  formThreadId = thread.id;
+  console.log('Form Thread created successfully:', formThreadId);
+  res.json({ id: formThreadId });
+ } catch (error) {
+   console.error('Error:', error);
+   res.status(500).json({ message: error.message });
+ }
+});
+
+app.post('/api/run-thread-form', async (req, res) => {
+ try {
+  const run = await openai.beta.threads.runs.createAndPoll(formThreadId, {
+    assistant_id: storedAssistantId,
+    instructions: "Please create the visualizations."
+  });
+  runIdToBeStored = run.id;
+  console.log("Form Run created successfully:", runIdToBeStored);
+   if (!runIdToBeStored) {
+     throw new Error('No run Id available to run.');
+   }
+
+
+   // Polling mechanism to see if runStatus is completed
+  await pollRunStatus(formThreadId,runIdToBeStored);
+
+  console.log('Form Thread completed successfully.');
+  messages = await openai.beta.threads.messages.list(formThreadId);
+
+  res.json({ options: messages.data[0].content[0]});
+
+ } catch (error) {
+   console.error('Error:', error);
+   res.status(500).json({ message: error.message });
+ }
+});
+
+
 
 
 app.post('/api/create-thread', async (req, res) => {

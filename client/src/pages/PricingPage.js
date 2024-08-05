@@ -8,7 +8,7 @@ import axios from 'axios';
 import { auth, db } from '../firebase.js';
 import { doc, increment, setDoc, updateDoc } from 'firebase/firestore';
 
-const stripePromise = loadStripe('your_publishable_key_here');
+const stripePromise = loadStripe('pk_test_51PghY2RojQ8FgCf4KXZ7AGQNE450j7ucLbI0RHoWPQaqwTKrSfSFxayjHyqIv9xaiXW5PudGD20Q2eKmfOn3hSdg00CXzMeEgb');
 
 const StripeCardElement = () => {
   return (
