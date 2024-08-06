@@ -162,7 +162,7 @@ app.post('/api/create-assistant-form', async (req, res) => {
    try {
      const assistant = await openai.beta.assistants.create({
        name: "Data Visualizer",
-       description: "create form options",
+       description: "you are tasked with examining the contents of the file for eventual visualization. If you have any confusion, your job is to ask questions for clarifications.",
        model: "gpt-4o",
        tools: [{ type: "code_interpreter" }],
        tool_resources: {

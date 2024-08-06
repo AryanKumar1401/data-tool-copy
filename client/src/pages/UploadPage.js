@@ -67,14 +67,11 @@ const UploadPage = () => {
 
       const assistant = await axios.post('/api/create-assistant-form',{fileId});
 
-
       console.log('Form Assistant created with ID:', assistant.data.id);
       const thread = await axios.post('/api/create-form-thread', { fileId});
       console.log('Form Thread created with ID:', thread.data.id);
 
-      const formResponse = await axios.post('/api/run-thread-form');
-      const {options} = formResponse.data;
-      console.log("The form options are",options.text.value);
+     
 
       
 

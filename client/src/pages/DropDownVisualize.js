@@ -5,6 +5,7 @@ import UploadPageAfterUploading from './UploadPageAfterUploading';
 import UploadPageAfterLoadingVisualization from './UploadPageAfterLoadingVisualization';
 import styled from 'styled-components';
 
+
 export let imageSrcExportDDV = '';
 let file_Id_DropDown = '';
 
@@ -15,6 +16,19 @@ const PageContainer = styled.div`
   background-color: #f0f0f0;
 `;
 
+
+// function optionGenerator() {
+
+//   for(let i = 0; i < options.length; i++) {
+
+//     <option value= "a" >options[i]</option>
+    
+    
+      
+//     }
+  
+
+// }
 
 
 
@@ -100,21 +114,40 @@ const handleThreadRun = async () => {
       return <UploadPageAfterLoadingVisualization />
     }
     else {
+
+      const optionfunction = async () => {
+
+        const formResponse = await axios.post('/api/run-thread-form');
+        const {options} = formResponse.data;
+
+        for(let i = 0; i < options.text.value.length; i++) {
+
+          <option value= "a" >options.text.value[i]</option>
+          
+          
+            
+          }
+      
+          
+      }
+
+
+
       return (
         <PageContainer>
 
+       
 
 <div class="relative bg-gray-100 flex items-center justify-center min-h-screen font-mono">
 
     <div class="relative max-w-md w-full bg-white shadow-md rounded-lg p-6">
         <h2 class="text-xl font-bold mb-4 text-gray-700">What sort of graph are you looking to create?</h2>
         <select value={selectedValueQ1} onChange={handleChangeQ1} class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
-            <option value="Bar">Bar</option>
-            <option value="Line">Line</option>
-            <option value="Pie">Pie</option>
-            <option value="Scatter">Scatterplot</option>
-            <option value="Geomap">Geomap</option>
-            <option value="Pairplots">Pairplot</option>
+       
+           
+            {{optionfunction}}
+
+          
         </select>
 
         <h2 class="text-xl font-bold mb-4 text-gray-700">What is the main purpose of your dataset?</h2>
@@ -139,6 +172,9 @@ const handleThreadRun = async () => {
       )
     }
   }
+
+
+  
 
   return (
     <div>
