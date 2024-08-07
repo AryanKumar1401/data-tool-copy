@@ -63,7 +63,6 @@ app.use(bodyParser.json());
 
 
 // File upload route
-//ALSO add the openai call to return a list containing viz options
 app.post('/upload', upload.single('file'), async (req, res) => {
  try {
    if (!req.file) {

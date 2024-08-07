@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { DropdownVizContext } from '../components/DropdownVizContext';
 import axios from 'axios';
 import UploadPageAfterUploading from './UploadPageAfterUploading';
@@ -17,23 +17,6 @@ const PageContainer = styled.div`
 `;
 
 
-// function optionGenerator() {
-
-//   for(let i = 0; i < options.length; i++) {
-
-//     <option value= "a" >options[i]</option>
-    
-    
-      
-//     }
-  
-
-// }
-
-
-
-
-
 
 function DropDownVisualize() { 
 
@@ -42,16 +25,34 @@ function DropDownVisualize() {
   const [isDisabled, setIsDisabled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isRtl, setIsRtl] = useState(false);
+  const [optionsArr,setOptionsArr] = useState([]);
 
   const [threadSuccessCreate, setthreadSuccessCreate] = useState(false);
 
-const [threadFinishNotiferDDV, setthreadFinishNotifierDDV] = useState(false);
+  const [threadFinishNotiferDDV, setthreadFinishNotifierDDV] = useState(false);
     const [selectedValueQ1, setSelectedValueQ1] = useState("Bar");
     const [selectedValueQ2, setSelectedValueQ2] = useState("Exploratory");
     const [Info, setInfo] = useState("");
     const [imageSrc, setImageSrc] = useState(null); // State for storing imageSrc
   const [cleanFileUrl, setCleanFileUrl] = useState(null); // State for storing clean CSV file URL
-  const [threadFinishNotifier, setThreadFinishNotifier] = useState(false);
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        const formResponse = await axios.post('/api/run-thread-form');
+        const {options} = formResponse.data;
+        console.log("options:",options.text.value);
+        setOptionsArr(options.text.value.split(',').map(item=>item.trim()));
+        console.log("Options array on dropdown:",optionsArr);
+      } catch (error) {
+        console.error('Error fetching options:', error);
+      }
+    };
+
+    fetchOptions();
+  }, []);
+
+
 
   const handleChangeQ1 = (event) => {
     setSelectedValueQ1(event.target.value);
@@ -115,37 +116,20 @@ const handleThreadRun = async () => {
     }
     else {
 
-      const optionfunction = async () => {
-
-        const formResponse = await axios.post('/api/run-thread-form');
-        const {options} = formResponse.data;
-
-        for(let i = 0; i < options.text.value.length; i++) {
-
-          <option value= "a" >options.text.value[i]</option>
-          
-          
-            
-          }
-      
-          
-      }
-
-
-
       return (
         <PageContainer>
-
-       
 
 <div class="relative bg-gray-100 flex items-center justify-center min-h-screen font-mono">
 
     <div class="relative max-w-md w-full bg-white shadow-md rounded-lg p-6">
         <h2 class="text-xl font-bold mb-4 text-gray-700">What sort of graph are you looking to create?</h2>
         <select value={selectedValueQ1} onChange={handleChangeQ1} class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
-       
-           
-            {{optionfunction}}
+        
+        {optionsArr.map((option, index) => (
+                  <option key={index} value={option}>
+                    {option}
+                  </option>
+                ))}
 
           
         </select>

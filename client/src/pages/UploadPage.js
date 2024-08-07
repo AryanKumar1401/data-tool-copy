@@ -63,7 +63,7 @@ const UploadPage = () => {
 
       const fileId = response.data.fileId;
       console.log('File uploaded with ID:', fileId);
-      setFileUploadSuccess(true);
+     
 
       const assistant = await axios.post('/api/create-assistant-form',{fileId});
 
@@ -80,11 +80,11 @@ const UploadPage = () => {
       // //NEW FUNCTION
 
       const response2 = await axios.post('/api/file_storer', {fileId});
-      console.log(response2.data)
+      console.log(response2.data);
       
 
       // //NEW FUNCTION SECTION END
-
+       setFileUploadSuccess(true);
 
           
     } catch (error) {
