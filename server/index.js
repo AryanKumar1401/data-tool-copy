@@ -161,7 +161,7 @@ app.post('/api/create-assistant-form', async (req, res) => {
    try {
      const assistant = await openai.beta.assistants.create({
        name: "Data Visualizer",
-       description: "you are tasked with examining the contents of the file for eventual visualization. If you have any confusion, your job is to ask questions for clarifications.",
+       description: "you are tasked with examining the contents of the file for eventual visualization. You must ONLY return your output in the specific format of the following: viz 1, viz2, viz3, ...",
        model: "gpt-4o",
        tools: [{ type: "code_interpreter" }],
        tool_resources: {
@@ -341,7 +341,7 @@ app.post('/api/create-form-thread', async (req, res) => {
     messages: [
       {
         role: "user",
-        content: "for this csv, suggest appropriate visualizations. you must only return the names of the visualizations separated by commas",
+        content: "for this csv, suggest appropriate visualizations. you must only return the names of the visualizations separated by commas. the only acceptable format for your output is as follows: visualization 1, visualization 2, visualization 3,... ",
         attachments: [{ file_id: file_form_Id, tools: [{ type: "code_interpreter" }] }],
       },
     ],

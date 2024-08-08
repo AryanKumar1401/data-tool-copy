@@ -108,6 +108,9 @@ const handleThreadRun = async () => {
 }
 
   const contentDisplay = () => {
+    if (optionsArr.length === 0) {
+      return <UploadPageAfterUploading />;
+    }
     if(threadSuccessCreate && !threadFinishNotiferDDV) {
       return <UploadPageAfterUploading />
     }
@@ -115,7 +118,6 @@ const handleThreadRun = async () => {
       return <UploadPageAfterLoadingVisualization />
     }
     else {
-
       return (
         <PageContainer>
 
@@ -124,14 +126,11 @@ const handleThreadRun = async () => {
     <div class="relative max-w-md w-full bg-white shadow-md rounded-lg p-6">
         <h2 class="text-xl font-bold mb-4 text-gray-700">What sort of graph are you looking to create?</h2>
         <select value={selectedValueQ1} onChange={handleChangeQ1} class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
-        
         {optionsArr.map((option, index) => (
                   <option key={index} value={option}>
                     {option}
                   </option>
                 ))}
-
-          
         </select>
 
         <h2 class="text-xl font-bold mb-4 text-gray-700">What is the main purpose of your dataset?</h2>
