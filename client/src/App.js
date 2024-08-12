@@ -17,6 +17,7 @@ import Maintenance from './pages/MaintenancePage';
 import ContactPage from './pages/ContactPage';
 import LogIn from './pages/LogIn';
 import SignUp from './pages/SignUp';
+import PersonProfile from './pages/personprofile';
 
 
 function App() {
@@ -68,6 +69,7 @@ function App() {
           <Route path="/dropdownviz" element={ <DropDownVisualize /> } />
           <Route path="/maintain" element={ <Maintenance /> } />
           <Route path="/contact" element={ <ContactPage /> } />
+          <Route path="/profile" element = {<PersonProfile />} />
         </Route>
         <Route path="/signup" element={ <SignUp /> } />
         <Route path="/login" element={ <LogIn /> } />

@@ -19,6 +19,10 @@ const Maintenance = () => {
       <Content>
         Page currently under maintenance T_T
       </Content>
+
+      <footer className="bg-black text-white text-center py-4 mt-auto">
+          <p>&copy; {new Date().getFullYear()} DataTool. All rights reserved.</p>
+        </footer>
     </PageContainer>
   );
 };
