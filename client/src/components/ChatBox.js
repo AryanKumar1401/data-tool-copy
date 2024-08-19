@@ -1,10 +1,16 @@
 // src/components/ChatBot.js
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import { checkCredits } from '../utils/firebaseUtils';
+import { UserContext } from '../utils/UserContext';
 
 
 const ChatBot = ({ fileId, messages, setMessages }) => {
-  const [input, setInput] = useState('');
+  const [ input, setInput ] = useState('');
+  
+  const [ creditCheck, setCreditCheck ] = useState(true);
+  const user = useContext(UserContext);
  
 
   // useEffect(() => {
@@ -36,6 +42,16 @@ const ChatBot = ({ fileId, messages, setMessages }) => {
    
     
   // }, []);
+
+  useEffect(() => {
+    const execute_check = async () => {
+      if (!user) return;
+      setCreditCheck((await checkCredits(user, 0.5)));
+    }
+
+    execute_check();
+  }, [user])
+  
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -82,14 +98,18 @@ const ChatBot = ({ fileId, messages, setMessages }) => {
         placeholder="Ask me about your data..."
       />
       <button 
-        onClick={handleSendMessage} 
-        className="inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 hover:bg-white"
+          onClick={ handleSendMessage } 
+          disabled={!creditCheck}
+        className="disabled:text-gray-500 disabled:cursor-not-allowed disabled:hover:bg-gray-300 inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 hover:bg-white"
       >
         <svg className="w-5 h-5 rotate-90 rtl:-rotate-90" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
           <path d="m17.914 18.594-8-18a1 1 0 0 0-1.828 0l-8 18a1 1 0 0 0 1.157 1.376L8 18.281V9a1 1 0 0 1 2 0v9.281l6.758 1.689a1 1 0 0 0 1.156-1.376Z"/>
         </svg>
         <span className="sr-only">Send message</span>
       </button>
+        <div className={ 'text-gray-700 text-sm absolute -top-16 text-center bg-gray-300 rounded mr-2 p-2' + (creditCheck ? " collapse" : "") }>
+          You do not have sufficient credits to perform this task. Please head over to the <Link to={ "/pricing" }>pricing page</Link> to buy more.
+        </div>
     </div>
   </div>
   

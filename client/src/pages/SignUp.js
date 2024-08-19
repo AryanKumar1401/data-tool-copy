@@ -16,8 +16,17 @@ function SignUp() {
     const handleSignInWithGoogle = (e) => {
         e.preventDefault();
         signInWithPopup(auth, provider)
-            .then((result) => {
-                const user = result.user;
+            .then((userCredential) => {
+                const user = userCredential.user;
+                console.log("User Created!")
+                setDoc(doc(db, "users", user.uid), {
+                    name: user.displayName,
+                    email: user.email,
+                    organization: organization,
+                    // Initial amount of tokens
+                    tokens: 100,
+                });
+                navigate("/login");
             })
             .catch((error) => {
                 console.error(error);
@@ -37,7 +46,7 @@ function SignUp() {
                 }).catch((error) => {
                     console.error(error)
                 });
-                setDoc(doc(db, "users", userCredential.user.uid), {
+                setDoc(doc(db, "users", user.uid), {
                     name: name,
                     email: email,
                     organization: organization,

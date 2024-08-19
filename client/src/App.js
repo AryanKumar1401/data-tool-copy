@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Outlet, useNavigate } from 'react-router-dom';
 import GlobalStyles from './GlobalStyles';
 import HomePage from './pages/HomePage';
@@ -14,10 +14,11 @@ import UploadPageCleanse from './pages/UploadPageCleanse';
 import UploadPageAfterLoadingVisualization from './pages/UploadPageAfterLoadingVisualization';
 import DropDownVisualize from './pages/DropDownVisualize';
 import Maintenance from './pages/MaintenancePage';
-import ContactPage from './pages/ContactPage';
+import ContactPage from './pages/contactPage';
 import LogIn from './pages/LogIn';
 import SignUp from './pages/SignUp';
 import PersonProfile from './pages/personprofile';
+import { UserContext } from './utils/UserContext';
 
 
 function App() {
@@ -56,9 +57,9 @@ function App() {
   };
 
   return (
-    <>
+    <UserContext.Provider value={user}>
       <Routes>
-        <Route element={ <RootLayout user={ user } signOut={ handleLogout } verified={ verified } /> } >
+        <Route element={ <RootLayout signOut={ handleLogout } verified={ verified } /> } >
           <Route path="/" element={ <HomePage /> } />
           <Route path="/about" element={ <AboutPage /> } />
           <Route path="/upload" element={ <UploadPage /> } />
@@ -74,12 +75,13 @@ function App() {
         <Route path="/signup" element={ <SignUp /> } />
         <Route path="/login" element={ <LogIn /> } />
       </Routes>
-    </>
+    </UserContext.Provider>
   );
 }
 
-function RootLayout({ user, signOut, verified }) {
+function RootLayout({ signOut, verified }) {
   const navigate = useNavigate();
+  const user = useContext(UserContext);
 
 
   return (

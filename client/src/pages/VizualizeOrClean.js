@@ -1,20 +1,43 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Button from 'react-bootstrap/Button';
 import { ButtonToolbar } from 'react-bootstrap';
+import { checkCredits } from '../utils/firebaseUtils';
+import { UserContext } from '../utils/UserContext';
 
 
 const VizualizeOrClean = () => {
   const navigate = useNavigate();
+  const [ insufficientCredits, setInsufficientCredits ] = useState(false);
+  const user = useContext(UserContext);
 
-  const goToNewPage = () => {
+  const goToCleanPage = () => {
+    if (!user?.emailVerified) {
+      navigate("/login");
+      return;
+    }
+    navigate("/cleanse");
+  };
+
+  const goToVisualizePage = () => {
+    if (!user?.emailVerified) {
+      navigate("/login");
+      return;
+    }
     navigate("/upload");
   };
 
-  const goToNewPage2 = () => {
-    navigate("/cleanse");
-  };
+  
+  useEffect(() => {
+    const execute_check = async () => {
+      if (!user?.emailVerified) return;
+      setInsufficientCredits(!(await checkCredits(user, 0.1)));
+    }
+
+    execute_check();
+  }, [user])
+  
 
   return (
 
@@ -28,14 +51,15 @@ const VizualizeOrClean = () => {
             You can either clean your dataset to prepare it for analysis or directly visualize your data to gain insights.
         </p>
         <div class="flex flex-col space-y-4">
-            <button onClick={goToNewPage2} class="flex items-center justify-center w-full py-3 px-4 bg-black text-white font-semibold rounded-lg shadow hover:bg-blue-600 transition duration-200">
+          <button onClick={ goToCleanPage } class="disabled:opacity-75 disabled:shadow-none flex items-center justify-center w-full py-3 px-4 bg-black text-white font-semibold rounded-lg shadow hover:bg-blue-600 transition duration-200" disabled={insufficientCredits}>
                 <i class="fas fa-broom mr-2"></i>
                 Clean Dataset
             </button>
-            <button onClick={goToNewPage} class="flex items-center justify-center w-full py-3 px-4 bg-black text-white font-semibold rounded-lg shadow hover:bg-orange-600 transition duration-200">
+          <button onClick={ goToVisualizePage } class="disabled:opacity-75 disabled:shadow-none flex items-center justify-center w-full py-3 px-4 bg-black text-white font-semibold rounded-lg shadow hover:bg-orange-600 transition duration-200" disabled={insufficientCredits}>
                 <i class="fas fa-chart-line mr-2"></i>
                 Visualize Dataset
             </button>
+          <div className={ insufficientCredits ? "" : "collapse" }>You do not have enough credits, please visit the <Link to={"/pricing"}>pricing page</Link> to buy some.</div>
         </div>
     </div>
 </div>

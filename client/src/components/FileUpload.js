@@ -1,10 +1,28 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { checkCredits } from '../utils/firebaseUtils';
+import { Link } from 'react-router-dom';
+import { UserContext } from '../utils/UserContext';
 
 const FileUpload = ({ handleFileChange, handleUpload, progress, msg, fileSelected }) => {
+  const [ creditCheck, setCreditCheck ] = useState(true);
+  const user = useContext(UserContext);
+
   const onFileChange = async (event) => {
     await handleFileChange(event);
     handleUpload();
   };
+
+  
+
+  useEffect(() => {
+    const execute_check = async () => {
+      if (!user) return;
+      setCreditCheck((await checkCredits(user, 0.1)));
+    }
+
+    execute_check();
+  }, [user])
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen min-w-screen p-28 bg-gray-900">
@@ -44,10 +62,13 @@ const FileUpload = ({ handleFileChange, handleUpload, progress, msg, fileSelecte
           />
         </label>
       </div>
-     <div class='p-6'>
-      <button disabled={!fileSelected} onClick={handleUpload} type="button" class={`text-black bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 ${
-          !fileSelected ? 'opacity-50 cursor-not-allowed' : ''
+      <div class='p-6 flex flex-col w-1/4 overflow-visible relative'>
+      <button disabled={!fileSelected && !creditCheck} onClick={handleUpload} type="button" class={`text-black bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 ${
+          !fileSelected && !creditCheck ? 'opacity-50 cursor-not-allowed' : ''
         }`}>Upload</button>
+        <div className={'text-white absolute -bottom-1/2' + (creditCheck ? " collapse" : "")}>
+        You do not have sufficient credits to perform this task. Please head over to the <Link to={"/pricing"}>pricing page</Link> to buy more.
+      </div>
       </div>
     </div>
 
