@@ -43,11 +43,12 @@ const ChatBot = ({ fileId, messages, setMessages }) => {
     
   // }, []);
 
+  const execute_check = async () => {
+    if (!user) return;
+    setCreditCheck((await checkCredits(user, 0.5)));
+  }
+
   useEffect(() => {
-    const execute_check = async () => {
-      if (!user) return;
-      setCreditCheck((await checkCredits(user, 0.5)));
-    }
 
     execute_check();
   }, [user])
@@ -60,7 +61,7 @@ const ChatBot = ({ fileId, messages, setMessages }) => {
     setInput('');
 
     try {
-      const response = await axios.post('/api/send-message', { message: input });
+      const response = await axios.post('/api/send-message', { message: input }, { headers: { "Authorization": await user.getIdToken() } });
       const runId = response.data.run_id;
       const botMsgs = response.data.messages
       .filter(message => message.role === "assistant" && message.run_id === runId)
@@ -74,6 +75,8 @@ const ChatBot = ({ fileId, messages, setMessages }) => {
     } catch (error) {
       console.error('Error sending message:', error);
     }
+
+    await execute_check();
   };
 
   return (

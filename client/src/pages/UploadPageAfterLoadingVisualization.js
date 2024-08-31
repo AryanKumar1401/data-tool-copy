@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import ChatBox from '../components/ChatBox';
 import axios from 'axios';
@@ -7,6 +7,7 @@ import { fileContentExporter, imageSrcExport } from './UploadPage';
 import { imageSrcExportDDV } from './DropDownVisualize';
 import GridPattern from '../components/magicui/background.tsx';
 import BoxReveal from '../components/magicui/box-reveal.tsx';
+import { UserContext } from '../utils/UserContext.js';
 
 
 const PageContainer = styled.div`
@@ -20,7 +21,9 @@ const PageContainer = styled.div`
 const UploadPageAfterLoadingVisualization = ({ fileUrl }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const [chatVisible, setChatVisible] = useState(true);
+  const [ chatVisible, setChatVisible ] = useState(true);
+  
+  const user = useContext(UserContext);
 
   const {
     handleFileChange,
@@ -92,7 +95,7 @@ const UploadPageAfterLoadingVisualization = ({ fileUrl }) => {
     const fetchInitialMessage = async () => {
      
       try {
-        const response = await axios.post('/api/get-initial-response');
+        const response = await axios.post('/api/get-initial-response', {}, { headers: { "Authorization": await user.getIdToken() } });
         // const botMessages = response.data.messages.map(message => ({
         //   text: message.content.find(content => content.type === 'text').text,
         //   isUser: false,

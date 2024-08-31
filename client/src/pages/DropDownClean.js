@@ -4,6 +4,7 @@ import axios from 'axios';
 import UploadPageAfterUploading from './UploadPageAfterUploading';
 import UploadPageAfterLoadingVisualization from './UploadPageAfterLoadingVisualization';
 import styled from 'styled-components';
+import { UserContext } from '../utils/UserContext';
 
 export let imageSrcExportDDV = '';
 let file_Id_DropDown = '';
@@ -40,7 +41,9 @@ const [threadFinishNotiferDDV, setthreadFinishNotifierDDV] = useState(false);
     const [Info, setInfo] = useState("");
     const [imageSrc, setImageSrc] = useState(null); // State for storing imageSrc
   const [cleanFileUrl, setCleanFileUrl] = useState(null); // State for storing clean CSV file URL
-  const [threadFinishNotifier, setThreadFinishNotifier] = useState(false);
+  const [ threadFinishNotifier, setThreadFinishNotifier ] = useState(false);
+  
+  const user = useContext(UserContext);
 
   const handleChangeQ1 = (event) => {
     setSelectedValueQ1(event.target.value);
@@ -82,7 +85,7 @@ const handleThreadRun = async () => {
   setthreadSuccessCreate(true);
   
 
-  const responseFromThread = await axios.post('/api/run-threadClean');
+  const responseFromThread = await axios.post('/api/run-threadClean', {}, { headers: { "Authorization": await user.getIdToken() } });
   
   const { imageUrl, messages, fileContent } = responseFromThread.data;
 

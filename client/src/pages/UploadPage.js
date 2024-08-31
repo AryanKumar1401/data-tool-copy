@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import FileUpload from '../components/FileUpload';
 import ChatBox from '../components/ChatBox';
 import axios from 'axios';
 import UploadPageAfterUploading from './UploadPageAfterUploading';
 import styled from 'styled-components';
 import DropDownVisualize from './DropDownVisualize';
+import { UserContext } from '../utils/UserContext';
 
 const PageContainer = styled.div`
   justify-content: center;
@@ -23,7 +24,9 @@ const UploadPage = () => {
   const [imageSrc, setImageSrc] = useState(null); // State for storing imageSrc
   const [cleanFileUrl, setCleanFileUrl] = useState(null); // State for storing clean CSV file URL
   const [fileUploadSuccess, setFileUploadSuccess] = useState(false);
-  const [threadFinishNotifier, setThreadFinishNotifier] = useState(false);
+  const [ threadFinishNotifier, setThreadFinishNotifier ] = useState(false);
+  
+  const user = useContext(UserContext);
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -51,6 +54,7 @@ const UploadPage = () => {
       const response = await axios.post('/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'Authorization': await user.getIdToken(),
         },
         
         onUploadProgress: (progressEvent) => {

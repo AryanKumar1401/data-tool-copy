@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import FileUpload from '../components/FileUpload';
 import axios from 'axios';
 import UploadPageAfterUploading from './UploadPageAfterUploading';
 import UploadPageAfterLoadingVisualization from './UploadPageAfterLoadingVisualization';
 import styled from 'styled-components';
 import DropDownClean from './DropDownClean';
+import { UserContext } from '../utils/UserContext';
 
 const PageContainer = styled.div`
   justify-content: center;
@@ -24,7 +25,9 @@ const UploadPageCleanse = () => {
   const [fileUploadSuccess, setFileUploadSuccess] = useState(false);
   const [threadFinishNotifier, setThreadFinishNotifier] = useState(false);
   const [imageSrc, setImageSrc] = useState(null); // State for storing imageSrc
-  const [fileUrl, setFileUrl] = useState(null); // State for storing the clean CSV file URL
+  const [ fileUrl, setFileUrl ] = useState(null); // State for storing the clean CSV file URL
+  
+  const user = useContext(UserContext);
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -52,6 +55,7 @@ const UploadPageCleanse = () => {
       const response = await axios.post('/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'Authorization': await user.getIdToken(),
         },
         onUploadProgress: (progressEvent) => {
           const percentageCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);

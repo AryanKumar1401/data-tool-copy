@@ -39,9 +39,9 @@ function App() {
         } else {
           setVerified(true);
         }
-        setUser(auth_user)
+        setUser(auth_user);
       } else {
-        setUser(null)
+        setUser(null);
       }
     });
   }, [])

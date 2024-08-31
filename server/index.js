@@ -5,6 +5,8 @@ const OpenAI = require('openai');
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const admin = require('firebase-admin');
+const { getFirestore, FieldValue } = require('firebase-admin/firestore');
+const { getAuth } = require('firebase-admin/auth');
 const { useAsyncValue } = require('react-router-dom');
 const app = express();
 require('dotenv').config();
@@ -25,6 +27,49 @@ admin.initializeApp({
 
 
 const bucket = admin.storage().bucket();
+
+
+// User Authentication Methods
+const auth = getAuth();
+
+const getUser = async (idToken) => {
+  return await auth.verifyIdToken(idToken);
+}
+
+// Firestore Database Methods
+const db = getFirestore();
+
+const updateCredits = async (userId, increment) => {
+  const userRef = db.collection('users').doc(userId);
+
+  // Atomically increment the population of the city by 50.
+  const res = await userRef.update({
+    tokens: FieldValue.increment(increment)
+  });
+}
+
+const verifyCredits = async (userId, check) => {
+  const userRef = db.collection("users").doc(userId);
+
+  const doc = await userRef.get();
+  if (!doc.exists) {
+    console.log('No such user!');
+    return false;
+  } else {
+    const data = doc.data();
+    console.log('Document data:', doc.data());
+    return (data.tokens >= check);
+  }
+}
+
+
+// Defines Pricing model for debiting tokens
+const pricingModel = {
+  file_upload: 5,
+  cleanse: 10,
+  per_character: 0.25,
+  visualization: 15,
+}
 
 
 const openai = new OpenAI({
@@ -81,6 +126,8 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
    console.log('File uploaded successfully:', file.id);
 
+   // Update credits for user
+   await updateCredits(await getUser(req.headers.authorization).uid, - pricingModel.file_upload);
 
 
    res.json({
@@ -267,6 +314,9 @@ app.post('/api/run-threadClean', async (req, res) => {
    });
   
    console.log('File uploaded to Firebase and accessible at:', url);
+
+   // Update Credits
+   await updateCredits((await getUser(req.headers.authorization)).uid, - pricingModel.cleanse);
   
    res.json({ fileUrl: url });
  } catch (error) {
@@ -461,6 +511,9 @@ app.post('/api/run-thread', async (req, res) => {
 
    console.log('File uploaded to Firebase and accessible at:', url);
 
+   // Update Credits
+   await updateCredits((await getUser(req.headers.authorization)).uid, - pricingModel.visualization);
+
    res.json({ imageUrl: url, messages: messages.data, fileContent: viz });
 
 
@@ -489,6 +542,8 @@ app.post('/api/get-initial-response', async (req, res) => {
     await pollRunStatus(storedThreadId,run1.id);
     console.log('Run completed successfully.');
 
+    await updateCredits(await getUser(req.headers.authorization).uid, - 248 * pricingModel.per_character);
+
     //if (runStatus.status === "failed") storedThreadId = "thread_RBtWGbi8B0fNu6gVCREGTp4o";
 
 
@@ -514,6 +569,9 @@ app.post('/api/send-message', async (req, res) => {
       }
     );
 
+    // Update Credits for input
+    await updateCredits(await getUser(req.headers.authorization).uid, - pricingModel.per_character * message.length);
+
     //create the run that responds as the first message
     const run2 = await openai.beta.threads.runs.create(storedThreadId, {
       assistant_id: storedAssistantId,
@@ -529,6 +587,9 @@ app.post('/api/send-message', async (req, res) => {
       storedThreadId
     );
     displayThreadMessages(messages);
+
+    // Update credits with output
+    await updateCredits(await getUser(req.headers.authorization).uid, - pricingModel.per_character * messages.data[ messages.data.length - 1 ].content[ 0 ].length);
 
 
     res.json({ messages: messages.data, run_id: run2.id });

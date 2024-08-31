@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { auth } from '../firebase';
 
 let imageSrcExport = '';
 let fileContentExporter = '';
@@ -35,10 +36,13 @@ const AssistantAPIKeyFunctions = () => {
     const formData = new FormData();
     formData.append('file', file);
 
+    const auth_token = await auth.currentUser.getIdToken(true);
+
     try {
       const response = await axios.post('/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'Authorization': auth_token,
         },
         onUploadProgress: (progressEvent) => {
           const percentageCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
@@ -57,7 +61,7 @@ const AssistantAPIKeyFunctions = () => {
       const thread = await axios.post('/api/create-thread', { fileId, assistantId: assistant.data.id });
       console.log('Thread created with ID:', thread.data.id);
 
-      const responseFromThread = await axios.post('/api/run-thread');
+      const responseFromThread = await axios.post('/api/run-thread', {}, {headers: {"Authorization": auth_token}});
       const { imageUrl, messages, fileContent } = responseFromThread.data;
       console.log('Image ID:', imageUrl);
       console.log('Messages:', messages);
